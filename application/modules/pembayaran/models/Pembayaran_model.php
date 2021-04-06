@@ -29,6 +29,16 @@ class Pembayaran_model extends CI_Model
         return $this->datatables->generate();
     }
 
+    public function get_kategori_pembayaran($nis)
+    {
+        $siswa = $this->db->get_where('siswa', ['nis' => $nis])->row_array();
+
+        $this->db->join('kategori', 'id_kategori');
+        $this->db->where('tahun_angkatan', $siswa['tahun_ajaran']);
+        $this->db->where('id_jurusan', $siswa['id_jurusan']);
+        return $this->db->get('pembayaran')->result();
+    }
+
     // get all
     function get_all()
     {

@@ -3,6 +3,25 @@ const base_url = $('meta[name="base_url"]').attr("content");
 // select2
 $(".select2").select2();
 
+$('.carisiswa').select2({
+  allowClear: true,
+  placeholder: 'Masukan Nama Siswa',
+  ajax: {
+    dataType: 'json',
+    url: base_url + 'siswa/siswajson',
+    data: function(params) {
+      return {
+        search: params.term
+      }
+    },
+    processResults: function (data, page) {
+      return {
+        results: data
+      };
+    },
+  }
+})
+
 // datatable
 $(".datatable").dataTable();
 
@@ -121,3 +140,18 @@ $(".dd").on("change", function () {
    },
  });
 });
+
+
+function toRupiah(angka = '0', idr = false) {
+  var rupiah = '';
+  if (angka == null) {
+    angka = '0';
+  }
+  var angkarev = angka.toString().split('').reverse().join('');
+  for (var i = 0; i < angkarev.length; i++) if (i % 3 == 0) rupiah += angkarev.substr(i, 3) + '.';
+    if (idr == true) {
+      return rupiah.split('', rupiah.length - 1).reverse().join('');
+    } else {
+      return 'Rp. ' + rupiah.split('', rupiah.length - 1).reverse().join('');
+    }
+  }

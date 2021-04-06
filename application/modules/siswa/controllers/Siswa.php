@@ -15,178 +15,196 @@ class Siswa extends CI_Controller
         $this->load->library('datatables');
     }
 
-    public function index()
+    public function siswajson()
     {
-        $data['judul'] = 'Data Siswa';
+        $key =  $this->input->get('search');
+        header('Content-Type: application/json');
+
+        $this->db->like('nama_siswa', $key, 'BOTH');
+        $this->db->limit(10);
+        $siswa = $this->db->get('siswa')->result_array();
+
+        $list = array();
+        foreach ($siswa as $index => $row) {
+            $list[$index]['id'] = $row['nis'];
+            $list[$index]['text'] = $row['nama_siswa']; 
+        }
+
+        echo json_encode($list);
+   }
+
+   public function index()
+   {
+    $data['judul'] = 'Data Siswa';
+
+    $this->load->view('templates/header', $data);
+    $this->load->view('siswa/siswa_list', $data);
+    $this->load->view('templates/footer', $data);
+} 
+
+public function json() {
+    header('Content-Type: application/json');
+    echo $this->Siswa_model->json();
+}
+
+public function read($id) 
+{
+    $row = $this->Siswa_model->get_by_id($id);
+    if ($row) {
+        $data = array(
+          'id_siswa' => $row->id_siswa,
+          'nama_jurusan' => $row->nama_jurusan,
+          'nama_kelas' => $row->nama_kelas,
+          'nis' => $row->nis,
+          'nama_siswa' => $row->nama_siswa,
+          'tgl_lahir' => $row->tgl_lahir,
+          'jk' => $row->jk,
+          'tahun_ajaran' => $row->tahun_ajaran,
+      );
+
+        $data['judul'] = 'Detail Siswa';
 
         $this->load->view('templates/header', $data);
-        $this->load->view('siswa/siswa_list', $data);
+        $this->load->view('siswa/siswa_read', $data);
         $this->load->view('templates/footer', $data);
-    } 
-
-    public function json() {
-        header('Content-Type: application/json');
-        echo $this->Siswa_model->json();
+    } else {
+        $this->session->set_flashdata('error', 'Data tidak ditemukan');
+        redirect(site_url('siswa'));
     }
+}
 
-    public function read($id) 
-    {
-        $row = $this->Siswa_model->get_by_id($id);
-        if ($row) {
-            $data = array(
-              'id_siswa' => $row->id_siswa,
-              'nama_jurusan' => $row->nama_jurusan,
-              'nama_kelas' => $row->nama_kelas,
-              'nis' => $row->nis,
-              'nama_siswa' => $row->nama_siswa,
-              'tgl_lahir' => $row->tgl_lahir,
-              'jk' => $row->jk,
-              'tahun_ajaran' => $row->tahun_ajaran,
-          );
+public function create() 
+{
+    $data = array(
+        'button' => 'Create',
+        'action' => site_url('siswa/create_action'),
+        'id_siswa' => set_value('id_siswa'),
+        'id_jurusan' => set_value('id_jurusan'),
+        'id_kelas' => set_value('id_kelas'),
+        'nis' => set_value('nis'),
+        'nama_siswa' => set_value('nama_siswa'),
+        'tgl_lahir' => set_value('tgl_lahir'),
+        'jk' => set_value('jk'),
+        'tahun_ajaran' => set_value('tahun_ajaran'),
+    );
 
-            $data['judul'] = 'Detail Siswa';
+    $data['judul'] = 'Tambah Siswa';
+    $data['kelas'] = $this->kelas_model->get_all();
+    $data['jurusan'] = $this->jurusan_model->get_all();
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('siswa/siswa_read', $data);
-            $this->load->view('templates/footer', $data);
-        } else {
-            $this->session->set_flashdata('error', 'Data tidak ditemukan');
-            redirect(site_url('siswa'));
-        }
-    }
+    $this->load->view('templates/header', $data);
+    $this->load->view('siswa/siswa_form', $data);
+    $this->load->view('templates/footer', $data);
+}
 
-    public function create() 
-    {
+public function create_action() 
+{
+    $this->_rules();
+
+    if ($this->form_validation->run() == FALSE) {
+        $this->create();
+    } else {
         $data = array(
-            'button' => 'Create',
-            'action' => site_url('siswa/create_action'),
-            'id_siswa' => set_value('id_siswa'),
-            'id_jurusan' => set_value('id_jurusan'),
-            'id_kelas' => set_value('id_kelas'),
-            'nis' => set_value('nis'),
-            'nama_siswa' => set_value('nama_siswa'),
-            'tgl_lahir' => set_value('tgl_lahir'),
-            'jk' => set_value('jk'),
-            'tahun_ajaran' => set_value('tahun_ajaran'),
+          'id_jurusan' => $this->input->post('id_jurusan',TRUE),
+          'id_kelas' => $this->input->post('id_kelas',TRUE),
+          'nis' => $this->input->post('nis',TRUE),
+          'nama_siswa' => $this->input->post('nama_siswa',TRUE),
+          'tgl_lahir' => $this->input->post('tgl_lahir',TRUE),
+          'jk' => $this->input->post('jk',TRUE),
+          'tahun_ajaran' => $this->input->post('tahun_ajaran',TRUE),
+      );
+
+        $this->Siswa_model->insert($data);
+        $this->session->set_flashdata('success', 'Ditambah');
+        redirect(site_url('siswa'));
+    }
+}
+
+public function update($id) 
+{
+    $row = $this->Siswa_model->get_by_id($id);
+
+    if ($row) {
+        $data = array(
+            'button' => 'Update',
+            'action' => site_url('siswa/update_action'),
+            'id_siswa' => set_value('id_siswa', $row->id_siswa),
+            'id_jurusan' => set_value('id_jurusan', $row->id_jurusan),
+            'id_kelas' => set_value('id_kelas', $row->id_kelas),
+            'nis' => set_value('nis', $row->nis),
+            'nama_siswa' => set_value('nama_siswa', $row->nama_siswa),
+            'tgl_lahir' => set_value('tgl_lahir', $row->tgl_lahir),
+            'jk' => set_value('jk', $row->jk),
+            'tahun_ajaran' => set_value('tahun_ajaran', $row->tahun_ajaran),
         );
 
-        $data['judul'] = 'Tambah Siswa';
+        $data['judul'] = 'Ubah Siswa';
         $data['kelas'] = $this->kelas_model->get_all();
         $data['jurusan'] = $this->jurusan_model->get_all();
 
         $this->load->view('templates/header', $data);
         $this->load->view('siswa/siswa_form', $data);
         $this->load->view('templates/footer', $data);
+
+    } else {
+        $this->session->set_flashdata('error', 'Data tidak ditemukan');
+        redirect(site_url('siswa'));
     }
+}
 
-    public function create_action() 
-    {
-        $this->_rules();
+public function update_action() 
+{
+    $this->_rules();
 
-        if ($this->form_validation->run() == FALSE) {
-            $this->create();
-        } else {
-            $data = array(
-              'id_jurusan' => $this->input->post('id_jurusan',TRUE),
-              'id_kelas' => $this->input->post('id_kelas',TRUE),
-              'nis' => $this->input->post('nis',TRUE),
-              'nama_siswa' => $this->input->post('nama_siswa',TRUE),
-              'tgl_lahir' => $this->input->post('tgl_lahir',TRUE),
-              'jk' => $this->input->post('jk',TRUE),
-              'tahun_ajaran' => $this->input->post('tahun_ajaran',TRUE),
-          );
+    if ($this->form_validation->run() == FALSE) {
+        $this->update($this->input->post('id_siswa', TRUE));
+    } else {
+        $data = array(
+          'id_jurusan' => $this->input->post('id_jurusan',TRUE),
+          'id_kelas' => $this->input->post('id_kelas',TRUE),
+          'nis' => $this->input->post('nis',TRUE),
+          'nama_siswa' => $this->input->post('nama_siswa',TRUE),
+          'tgl_lahir' => $this->input->post('tgl_lahir',TRUE),
+          'jk' => $this->input->post('jk',TRUE),
+          'tahun_ajaran' => $this->input->post('tahun_ajaran',TRUE),
+      );
 
-            $this->Siswa_model->insert($data);
-            $this->session->set_flashdata('success', 'Ditambah');
-            redirect(site_url('siswa'));
-        }
+        $this->Siswa_model->update($this->input->post('id_siswa', TRUE), $data);
+        $this->session->set_flashdata('success', 'Diubah');
+        redirect(site_url('siswa'));
     }
+}
 
-    public function update($id) 
-    {
-        $row = $this->Siswa_model->get_by_id($id);
+public function delete($id) 
+{
+    $row = $this->Siswa_model->get_by_id($id);
 
-        if ($row) {
-            $data = array(
-                'button' => 'Update',
-                'action' => site_url('siswa/update_action'),
-                'id_siswa' => set_value('id_siswa', $row->id_siswa),
-                'id_jurusan' => set_value('id_jurusan', $row->id_jurusan),
-                'id_kelas' => set_value('id_kelas', $row->id_kelas),
-                'nis' => set_value('nis', $row->nis),
-                'nama_siswa' => set_value('nama_siswa', $row->nama_siswa),
-                'tgl_lahir' => set_value('tgl_lahir', $row->tgl_lahir),
-                'jk' => set_value('jk', $row->jk),
-                'tahun_ajaran' => set_value('tahun_ajaran', $row->tahun_ajaran),
-            );
-
-            $data['judul'] = 'Ubah Siswa';
-            $data['kelas'] = $this->kelas_model->get_all();
-            $data['jurusan'] = $this->jurusan_model->get_all();
-
-            $this->load->view('templates/header', $data);
-            $this->load->view('siswa/siswa_form', $data);
-            $this->load->view('templates/footer', $data);
-
-        } else {
-            $this->session->set_flashdata('error', 'Data tidak ditemukan');
-            redirect(site_url('siswa'));
-        }
+    if ($row) {
+        $this->Siswa_model->delete($id);
+        $this->session->set_flashdata('success', 'Dihapus');
+        redirect(site_url('siswa'));
+    } else {
+        $this->session->set_flashdata('error', 'Data tidak ditemukan');
+        redirect(site_url('siswa'));
     }
+}
 
-    public function update_action() 
-    {
-        $this->_rules();
+public function _rules() 
+{
+   $this->form_validation->set_rules('id_jurusan', 'id jurusan', 'trim|required|numeric');
+   $this->form_validation->set_rules('id_kelas', 'id kelas', 'trim|required|numeric');
+   $this->form_validation->set_rules('nis', 'nis', 'trim|required|numeric');
+   $this->form_validation->set_rules('nama_siswa', 'nama siswa', 'trim|required');
+   $this->form_validation->set_rules('tgl_lahir', 'tgl lahir', 'trim|required');
+   $this->form_validation->set_rules('jk', 'jk', 'trim|required');
+   $this->form_validation->set_rules('tahun_ajaran', 'tahun ajaran', 'trim|required|numeric');
 
-        if ($this->form_validation->run() == FALSE) {
-            $this->update($this->input->post('id_siswa', TRUE));
-        } else {
-            $data = array(
-              'id_jurusan' => $this->input->post('id_jurusan',TRUE),
-              'id_kelas' => $this->input->post('id_kelas',TRUE),
-              'nis' => $this->input->post('nis',TRUE),
-              'nama_siswa' => $this->input->post('nama_siswa',TRUE),
-              'tgl_lahir' => $this->input->post('tgl_lahir',TRUE),
-              'jk' => $this->input->post('jk',TRUE),
-              'tahun_ajaran' => $this->input->post('tahun_ajaran',TRUE),
-          );
+   $this->form_validation->set_rules('id_siswa', 'id_siswa', 'trim');
+   $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+}
 
-            $this->Siswa_model->update($this->input->post('id_siswa', TRUE), $data);
-            $this->session->set_flashdata('success', 'Diubah');
-            redirect(site_url('siswa'));
-        }
-    }
-
-    public function delete($id) 
-    {
-        $row = $this->Siswa_model->get_by_id($id);
-
-        if ($row) {
-            $this->Siswa_model->delete($id);
-            $this->session->set_flashdata('success', 'Dihapus');
-            redirect(site_url('siswa'));
-        } else {
-            $this->session->set_flashdata('error', 'Data tidak ditemukan');
-            redirect(site_url('siswa'));
-        }
-    }
-
-    public function _rules() 
-    {
-       $this->form_validation->set_rules('id_jurusan', 'id jurusan', 'trim|required|numeric');
-       $this->form_validation->set_rules('id_kelas', 'id kelas', 'trim|required|numeric');
-       $this->form_validation->set_rules('nis', 'nis', 'trim|required|numeric');
-       $this->form_validation->set_rules('nama_siswa', 'nama siswa', 'trim|required');
-       $this->form_validation->set_rules('tgl_lahir', 'tgl lahir', 'trim|required');
-       $this->form_validation->set_rules('jk', 'jk', 'trim|required');
-       $this->form_validation->set_rules('tahun_ajaran', 'tahun ajaran', 'trim|required|numeric');
-
-       $this->form_validation->set_rules('id_siswa', 'id_siswa', 'trim');
-       $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
-   }
-
-   public function excel()
-   {
+public function excel()
+{
     $this->load->helper('exportexcel');
     $namaFile = "siswa.xls";
     $judul = "siswa";

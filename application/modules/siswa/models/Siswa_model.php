@@ -46,6 +46,15 @@ class Siswa_model extends CI_Model
        $this->db->where($this->id, $id);
        return $this->db->get($this->table)->row();
    }
+
+    // get data by nis
+    function get_by_nis($nis)
+    {
+       $this->db->join('kelas', 'id_kelas', 'left');
+       $this->db->join('jurusan', 'id_jurusan', 'left');
+       $this->db->where('nis', $nis);
+       return $this->db->get($this->table)->row();
+   }
    
     // get total rows
    function total_rows($q = NULL) {

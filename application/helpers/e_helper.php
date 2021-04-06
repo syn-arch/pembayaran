@@ -68,11 +68,11 @@ function delImage($table, $id, $column = 'gambar')
 {
 	$ci =& get_instance();
 	$gambar_lama = $ci->db->get_where($table, ['id_'.$table => $id])->row_array()[$column];
-    $path = 'assets/img/' . $table . '/' . $gambar_lama;
-    
+	$path = 'assets/img/' . $table . '/' . $gambar_lama;
+
 	if (file_exists(FCPATH . $path)) {
 		unlink(FCPATH . $path);
-    }
+	}
 }
 
 function autoID($str, $table)
@@ -80,7 +80,7 @@ function autoID($str, $table)
 	// PLG00001
 	$ci =& get_instance();
 	$kode = $ci->db->query("SELECT MAX(id_" . $table . ") as kode from $table")->row()->kode;
-    $kode_baru = substr($kode, 3, 5) + 1;
+	$kode_baru = substr($kode, 3, 5) + 1;
 	return $str . sprintf("%05s", $kode_baru);
 }
 
@@ -98,17 +98,35 @@ function acak($length)
 	return strtoupper($random);
 }
 
- function rrmdir($dir) { 
-   if (is_dir($dir)) { 
-     $objects = scandir($dir);
-     foreach ($objects as $object) { 
-       if ($object != "." && $object != "..") { 
-         if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir."/".$object))
-           rrmdir($dir. DIRECTORY_SEPARATOR .$object);
-         else
-           unlink($dir. DIRECTORY_SEPARATOR .$object); 
-       } 
-     }
-     rmdir($dir); 
-   } 
- }
+function rrmdir($dir) { 
+	if (is_dir($dir)) { 
+		$objects = scandir($dir);
+		foreach ($objects as $object) { 
+			if ($object != "." && $object != "..") { 
+				if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir."/".$object))
+					rrmdir($dir. DIRECTORY_SEPARATOR .$object);
+				else
+					unlink($dir. DIRECTORY_SEPARATOR .$object); 
+			} 
+		}
+		rmdir($dir); 
+	} 
+}
+
+function faktur()
+{
+	$ci =& get_instance();
+	//TJ-DDMMYY000X
+	$ci->db->where('DATE(tgl)', date('Y-m-d'));
+	$ci->db->order_by('no_faktur', 'DESC');
+	$latest = $ci->db->get('transaksi')->row();
+
+	if (!$latest) {
+		$id = 'FK-' . date('dmy') . sprintf('%04s', 1);
+	}else{
+		$number = substr($latest->no_faktur, 9,4) + 1;
+		$id = 'FK-' . date('dmy') . sprintf('%04s', $number);
+	}
+
+	return $id;
+}
