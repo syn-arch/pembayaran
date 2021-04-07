@@ -19,13 +19,14 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                  <table class="table">
-                     <tr><td>Id Kategori</td><td><?php echo $id_kategori; ?></td></tr>
+                     <tr><td>Kategori</td><td><?php echo $nama_kategori; ?></td></tr>
                      <tr><td>Nis</td><td><?php echo $nis; ?></td></tr>
+                     <tr><td>Siswa</td><td><?php echo $nama_siswa; ?></td></tr>
                      <tr><td>Tgl</td><td><?php echo $tgl; ?></td></tr>
                      <tr><td>Tahun Dibayar</td><td><?php echo $tahun_dibayar; ?></td></tr>
                      <tr><td>Jumlah Dibayar</td><td><?php echo $jumlah_dibayar; ?></td></tr>
                      <tr><td>Status</td><td><?php echo $status; ?></td></tr>
-                     <tr><td>Bukti Pembayaran</td><td><?php echo $bukti_pembayaran; ?></td></tr>
+                     <tr><td>Bukti Pembayaran</td><td><img src="<?php echo base_url('assets/img/transaksi/') . $bukti_pembayaran ?>" width="200" alt="" class="img-responsive"></td></tr>
                  </table>
              </div>
          </div>

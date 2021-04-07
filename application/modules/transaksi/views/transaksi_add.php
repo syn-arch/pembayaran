@@ -48,6 +48,7 @@
                            <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Faktur</th>
                                 <th>Kategori</th>
                                 <th>Nis</th>
                                 <th>Siswa</th>
@@ -93,6 +94,8 @@
                 oLanguage: {
                     sProcessing: "loading..."
                 },
+                paging :false,
+                searching :false,
                 processing: true,
                 serverSide: true,
                 ajax: {"url": "transaksi/lastjson", "type": "POST"},
@@ -101,13 +104,28 @@
                     "data": "id_transaksi",
                     "orderable": false
                 },
+                {"data": "no_faktur"},
                 {"data": "nama_kategori"},
                 {"data": "nis"},
                 {"data": "nama_siswa"},
                 {"data": "tgl"},
                 {"data": "tahun_dibayar"},
-                {"data": "jumlah_dibayar"},
-                {"data": "status"}
+                {
+                    "data": "jumlah_dibayar",
+                    render: $.fn.dataTable.render.number('.', '.', 0, '')
+                },
+                {
+                    "data": "status",
+                    render : function(data, type, row){
+                        if(data == 'diterima'){
+                            return '<button class="btn btn-success">DITERIMA</button>'
+                        }else if(data == 'pending'){
+                            return '<button class="btn btn-warning">PENDING</button>'
+                        }else{
+                            return '<button class="btn btn-danger">DITOLAK</button>'
+                        }
+                    }
+                },
                 ],
                 order: [[0, 'desc']],
                 rowCallback: function(row, data, iDisplayIndex) {

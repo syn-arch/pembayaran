@@ -17,30 +17,25 @@
                 <div class="row">
                     <div class="col-md-2"></div>
                     <div class="col-md-8">
-                        <form action="<?php echo $action; ?>" method="post">
-                            <div class="form-group <?php if(form_error('id_kategori')) echo 'has-error'?> ">
+                        <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
+                            <div class="form-group <?php if(form_error('id_pembayaran')) echo 'has-error'?> ">
                                 <label for="int">Kategori</label>
-                                <select name="id_kategori" id="id_kategori" class="form-control">
+                                <select name="id_pembayaran" id="id_pembayaran" class="form-control">
                                     <option value="">-- Pilih Kategori --</option>
                                     <?php foreach ($kategori as $row): ?>
-                                        <option <?php echo $id_kategori == $row->id_kategori ? 'selected': ''  ?> value="<?php echo $row->id_kategori ?>"><?php echo $row->nama_kategori ?></option>
+                                        <option <?php echo $id_pembayaran == $row->id_pembayaran ? 'selected': ''  ?> value="<?php echo $row->id_pembayaran ?>"><?php echo $row->nama_kategori ?></option>
                                     <?php endforeach ?>
                                 </select>
-                                <?php echo form_error('id_kategori', '<small style="color:red">','</small>') ?>
+                                <?php echo form_error('id_pembayaran', '<small style="color:red">','</small>') ?>
                             </div>
                             <div class="form-group <?php if(form_error('nis')) echo 'has-error'?> ">
                                 <label for="int">Nis</label>
-                                <select name="nis" id="nis" class="form-control">
-                                    <option value="">-- Pilih Siswa --</option>
-                                    <?php foreach ($siswa as $row): ?>
-                                        <option <?php echo $nis == $row->nis ? 'selected': ''  ?> value="<?php echo $row->nis ?>"><?php echo $row->nama_siswa ?></option>
-                                    <?php endforeach ?>
-                                </select>
+                                <input type="text" name="nis" class="form-control" value="<?php echo $nis ?>" readonly>
                                 <?php echo form_error('nis', '<small style="color:red">','</small>') ?>
                             </div>
                             <div class="form-group <?php if(form_error('tgl')) echo 'has-error'?> ">
                                 <label for="timestamp">Tgl</label>
-                                <input type="date" class="form-control" name="tgl" id="tgl" placeholder="Tgl" value="<?php echo $tgl; ?>" />
+                                <input type="datetime-local" class="form-control" name="tgl" id="tgl" placeholder="Tgl" value="<?php echo date('Y-m-d\TH:i:s', strtotime($tgl)) ?>" />
                                 <?php echo form_error('tgl', '<small style="color:red">','</small>') ?>
                             </div>
                             <div class="form-group <?php if(form_error('tahun_dibayar')) echo 'has-error'?> ">
@@ -55,12 +50,17 @@
                             </div>
                             <div class="form-group <?php if(form_error('status')) echo 'has-error'?> ">
                                 <label for="varchar">Status</label>
-                                <input type="text" class="form-control" name="status" id="status" placeholder="Status" value="<?php echo $status; ?>" />
+                                <select name="status" id="status" class="form-control">
+                                    <option value="pending" <?php echo $status == 'pending' ? 'selected' : '' ?>>Pending</option>
+                                    <option value="diterima" <?php echo $status == 'diterima' ? 'selected' : '' ?>>Diterima</option>
+                                    <option value="ditolak" <?php echo $status == 'ditolak' ? 'selected' : '' ?>>Ditolak</option>
+                                </select>
                                 <?php echo form_error('status', '<small style="color:red">','</small>') ?>
                             </div>
                             <div class="form-group <?php if(form_error('bukti_pembayaran')) echo 'has-error'?> ">
                                 <label for="varchar">Bukti Pembayaran</label>
-                                <input type="text" class="form-control" name="bukti_pembayaran" id="bukti_pembayaran" placeholder="Bukti Pembayaran" value="<?php echo $bukti_pembayaran; ?>" />
+                                <input type="file" name="bukti" class="form-control">
+                                <img src="<?php echo base_url('assets/img/transaksi/') . $bukti_pembayaran ?>" alt="" class="img-responsive">
                                 <?php echo form_error('bukti_pembayaran', '<small style="color:red">','</small>') ?>
                             </div>
                             <input type="hidden" name="id_transaksi" value="<?php echo $id_transaksi; ?>" /> 

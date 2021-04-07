@@ -35,13 +35,33 @@ class Transaksi extends CI_Controller
         echo $this->Transaksi_model->lastjson();
     }
 
+    public function invoice($id) 
+    {
+        $row = $this->Transaksi_model->get_by_id($id);
+        if ($row) {
+
+            $this->load->library('pdf');
+            $data['data'] = $row;
+            $data['judul'] = 'Faktur ' . $row->no_faktur;
+            $data['telah_dibayar'] = $this->Transaksi_model->get_telah_dibayar($row->nis, $row->id_pembayaran);
+
+            $this->pdf->setPaper('A4', 'landscape');
+            $this->pdf->name("FAKTUR {$row->no_faktur}.pdf");
+            $this->pdf->view('transaksi/transaksi_invoice', $data);
+
+        } else {
+            $this->session->set_flashdata('error', 'Data tidak ditemukan');
+            redirect(site_url('transaksi'));
+        }
+    }
+
     public function read($id) 
     {
         $row = $this->Transaksi_model->get_by_id($id);
         if ($row) {
             $data = array(
               'id_transaksi' => $row->id_transaksi,
-              'nama_id_pembayaran' => $row->nama_id_pembayaran,
+              'nama_kategori' => $row->nama_kategori,
               'nama_siswa' => $row->nama_siswa,
               'nis' => $row->nis,
               'tgl' => $row->tgl,
@@ -88,14 +108,17 @@ class Transaksi extends CI_Controller
     {
 
         $data = array(
-          'id_pembayaran' => $this->input->post('id_pembayaran',TRUE),
-          'nis' => $this->input->post('nis',TRUE),
-          'no_faktur' => $this->input->post('no_faktur',TRUE),
-          'jumlah_dibayar' => $this->input->post('jumlah_dibayar',TRUE),
-          'tahun_dibayar' => date('Y'),
-          'status' => 'dierima',
-          'bukti_pembayaran' => _upload('bukti', 'transaksi/bayar/' . $this->input->post('nis') . '/' . $this->input->post('id_pembayaran'), 'bukti_pembayaran')
+            'id_pembayaran' => $this->input->post('id_pembayaran',TRUE),
+            'nis' => $this->input->post('nis',TRUE),
+            'no_faktur' => $this->input->post('no_faktur',TRUE),
+            'jumlah_dibayar' => $this->input->post('jumlah_dibayar',TRUE),
+            'tahun_dibayar' => date('Y'),
+            'status' => 'diterima',
         );
+
+        if ($_FILES['bukti']['name']) {
+            $data['bukti_pembayaran'] = _upload('bukti', 'transaksi/bayar/' . $this->input->post('nis') . '/' . $this->input->post('id_pembayaran'), 'transaksi');
+        }
 
         $this->Transaksi_model->insert($data);
         $this->session->set_flashdata('success', 'Ditambah');
@@ -111,7 +134,7 @@ class Transaksi extends CI_Controller
                 'button' => 'Update',
                 'action' => site_url('transaksi/update_action'),
                 'id_transaksi' => set_value('id_transaksi', $row->id_transaksi),
-                'id_id_pembayaran' => set_value('id_id_pembayaran', $row->id_id_pembayaran),
+                'id_pembayaran' => set_value('id_pembayaran', $row->id_pembayaran),
                 'nis' => set_value('nis', $row->nis),
                 'tgl' => set_value('tgl', $row->tgl),
                 'tahun_dibayar' => set_value('tahun_dibayar', $row->tahun_dibayar),
@@ -121,8 +144,8 @@ class Transaksi extends CI_Controller
             );
 
             $data['judul'] = 'Ubah Transaksi';
-            $data['id_pembayaran'] = $this->kategori_model->get_all();
             $data['siswa'] = $this->siswa_model->get_all();
+            $data['kategori'] = $this->pembayaran_model->get_kategori_pembayaran($row->nis);
 
             $this->load->view('templates/header', $data);
             $this->load->view('transaksi/transaksi_form', $data);
@@ -141,15 +164,20 @@ class Transaksi extends CI_Controller
         if ($this->form_validation->run() == FALSE) {
             $this->update($this->input->post('id_transaksi', TRUE));
         } else {
+
             $data = array(
-              'id_id_pembayaran' => $this->input->post('id_id_pembayaran',TRUE),
-              'nis' => $this->input->post('nis',TRUE),
-              'tgl' => $this->input->post('tgl',TRUE),
-              'tahun_dibayar' => $this->input->post('tahun_dibayar',TRUE),
-              'jumlah_dibayar' => $this->input->post('jumlah_dibayar',TRUE),
-              'status' => $this->input->post('status',TRUE),
-              'bukti_pembayaran' => $this->input->post('bukti_pembayaran',TRUE),
-          );
+                'id_pembayaran' => $this->input->post('id_pembayaran',TRUE),
+                'nis' => $this->input->post('nis',TRUE),
+                'tgl' => $this->input->post('tgl',TRUE),
+                'tahun_dibayar' => $this->input->post('tahun_dibayar',TRUE),
+                'jumlah_dibayar' => $this->input->post('jumlah_dibayar',TRUE),
+                'status' => $this->input->post('status',TRUE)
+            );
+
+            if ($_FILES['bukti']['name']) {
+                delImage('transaksi', $this->input->post('id_transaksi'), 'bukti_pembayaran');
+                $data['bukti_pembayaran'] = _upload('bukti', 'transaksi/update/' . $this->input->post('id_transaksi'), 'transaksi');
+            }
 
             $this->Transaksi_model->update($this->input->post('id_transaksi', TRUE), $data);
             $this->session->set_flashdata('success', 'Diubah');
@@ -162,6 +190,7 @@ class Transaksi extends CI_Controller
         $row = $this->Transaksi_model->get_by_id($id);
 
         if ($row) {
+            delImage('transaksi', $id, 'bukti_pembayaran');
             $this->Transaksi_model->delete($id);
             $this->session->set_flashdata('success', 'Dihapus');
             redirect(site_url('transaksi'));
@@ -173,79 +202,80 @@ class Transaksi extends CI_Controller
 
     public function _rules() 
     {
-       $this->form_validation->set_rules('id_id_pembayaran', 'id id_pembayaran', 'trim|required|numeric');
-       $this->form_validation->set_rules('nis', 'nis', 'trim|required|numeric');
-       $this->form_validation->set_rules('tgl', 'tgl', 'trim|required');
-       $this->form_validation->set_rules('tahun_dibayar', 'tahun dibayar', 'trim|required|numeric');
-       $this->form_validation->set_rules('jumlah_dibayar', 'jumlah dibayar', 'trim|required|numeric');
-       $this->form_validation->set_rules('status', 'status', 'trim|required');
-       $this->form_validation->set_rules('bukti_pembayaran', 'bukti pembayaran', 'trim');
+        $this->form_validation->set_rules('id_pembayaran', 'id pembayaran', 'trim|required|numeric');
+        $this->form_validation->set_rules('nis', 'nis', 'trim|required|numeric');
+        $this->form_validation->set_rules('tgl', 'tgl', 'trim|required');
+        $this->form_validation->set_rules('tahun_dibayar', 'tahun dibayar', 'trim|required|numeric');
+        $this->form_validation->set_rules('jumlah_dibayar', 'jumlah dibayar', 'trim|required|numeric');
+        $this->form_validation->set_rules('status', 'status', 'trim|required');
 
-       $this->form_validation->set_rules('id_transaksi', 'id_transaksi', 'trim');
-       $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
-   }
-
-   public function excel()
-   {
-    $this->load->helper('exportexcel');
-    $namaFile = "transaksi.xls";
-    $judul = "transaksi";
-    $tablehead = 0;
-    $tablebody = 1;
-    $nourut = 1;
-        //penulisan header
-    header("Pragma: public");
-    header("Expires: 0");
-    header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
-    header("Content-Type: application/force-download");
-    header("Content-Type: application/octet-stream");
-    header("Content-Type: application/download");
-    header("Content-Disposition: attachment;filename=" . $namaFile . "");
-    header("Content-Transfer-Encoding: binary ");
-
-    xlsBOF();
-
-    $kolomhead = 0;
-    xlsWriteLabel($tablehead, $kolomhead++, "No");
-    xlsWriteLabel($tablehead, $kolomhead++, "id_pembayaran");
-    xlsWriteLabel($tablehead, $kolomhead++, "Siswa");
-    xlsWriteLabel($tablehead, $kolomhead++, "Tgl");
-    xlsWriteLabel($tablehead, $kolomhead++, "Tahun Dibayar");
-    xlsWriteLabel($tablehead, $kolomhead++, "Jumlah Dibayar");
-    xlsWriteLabel($tablehead, $kolomhead++, "Status");
-
-    foreach ($this->Transaksi_model->get_all() as $data) {
-        $kolombody = 0;
-
-            //ubah xlsWriteLabel menjadi xlsWriteNumber untuk kolom numeric
-        xlsWriteNumber($tablebody, $kolombody++, $nourut);
-        xlsWriteNumber($tablebody, $kolombody++, $data->nama_id_pembayaran);
-        xlsWriteNumber($tablebody, $kolombody++, $data->nama_siswa);
-        xlsWriteLabel($tablebody, $kolombody++, $data->tgl);
-        xlsWriteNumber($tablebody, $kolombody++, $data->tahun_dibayar);
-        xlsWriteNumber($tablebody, $kolombody++, $data->jumlah_dibayar);
-        xlsWriteLabel($tablebody, $kolombody++, $data->status);
-
-        $tablebody++;
-        $nourut++;
+        $this->form_validation->set_rules('id_transaksi', 'id_transaksi', 'trim');
+        $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
     }
 
-    xlsEOF();
-    exit();
-}
+    public function excel()
+    {
+        $this->load->helper('exportexcel');
+        $namaFile = "transaksi.xls";
+        $judul = "transaksi";
+        $tablehead = 0;
+        $tablebody = 1;
+        $nourut = 1;
+        //penulisan header
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header("Content-Disposition: attachment;filename=" . $namaFile . "");
+        header("Content-Transfer-Encoding: binary ");
 
-public function word()
-{
-    header("Content-type: application/vnd.ms-word");
-    header("Content-Disposition: attachment;Filename=transaksi.doc");
+        xlsBOF();
 
-    $data = array(
-        'transaksi_data' => $this->Transaksi_model->get_all(),
-        'start' => 0
-    );
+        $kolomhead = 0;
+        xlsWriteLabel($tablehead, $kolomhead++, "No");
+        xlsWriteLabel($tablehead, $kolomhead++, "Kategori");
+        xlsWriteLabel($tablehead, $kolomhead++, "Nis");
+        xlsWriteLabel($tablehead, $kolomhead++, "Siswa");
+        xlsWriteLabel($tablehead, $kolomhead++, "Tgl");
+        xlsWriteLabel($tablehead, $kolomhead++, "Tahun Dibayar");
+        xlsWriteLabel($tablehead, $kolomhead++, "Jumlah Dibayar");
+        xlsWriteLabel($tablehead, $kolomhead++, "Status");
 
-    $this->load->view('transaksi/transaksi_doc',$data);
-}
+        foreach ($this->Transaksi_model->get_all() as $data) {
+            $kolombody = 0;
+
+            //ubah xlsWriteLabel menjadi xlsWriteNumber untuk kolom numeric
+            xlsWriteNumber($tablebody, $kolombody++, $nourut);
+            xlsWriteLabel($tablebody, $kolombody++, $data->nama_kategori);
+            xlsWriteNumber($tablebody, $kolombody++, $data->nis);
+            xlsWriteLabel($tablebody, $kolombody++, $data->nama_siswa);
+            xlsWriteLabel($tablebody, $kolombody++, $data->tgl);
+            xlsWriteNumber($tablebody, $kolombody++, $data->tahun_dibayar);
+            xlsWriteNumber($tablebody, $kolombody++, $data->jumlah_dibayar);
+            xlsWriteLabel($tablebody, $kolombody++, $data->status);
+
+            $tablebody++;
+            $nourut++;
+        }
+
+        xlsEOF();
+        exit();
+    }
+
+    public function word()
+    {
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment;Filename=transaksi.doc");
+
+        $data = array(
+            'transaksi_data' => $this->Transaksi_model->get_all(),
+            'start' => 0
+        );
+
+        $this->load->view('transaksi/transaksi_doc',$data);
+    }
 
 }
 

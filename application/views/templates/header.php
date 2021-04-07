@@ -37,7 +37,7 @@ if (!$user) {
   <!-- jQuery 3 -->
   <script src="<?php echo base_url('vendor/lte/') ?>bower_components/jquery/dist/jquery.min.js"></script>
   <!-- DataTables -->
-  <script src="<?php echo base_url('assets/datatables/jquery.dataTables.js') ?>"></script>
+  <script src="<?php echo base_url('assets/datatables/jquery.dataTables.min.js') ?>"></script>
   <script src="<?php echo base_url('assets/datatables/dataTables.bootstrap.js') ?>"></script>
   <!-- sweetalert -->
   <script src="<?php echo base_url('vendor/sweetalert/sweetalert.min.js') ?>"></script>

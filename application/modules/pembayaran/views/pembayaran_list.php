@@ -79,7 +79,8 @@
             {"data": "nama_jurusan"},
             {"data": "tahun_angkatan"},
             {
-                "data": "nominal"
+                "data": "nominal",
+                render: $.fn.dataTable.render.number('.', '.', 0, '')
             },
             {"data": "keterangan"},
             {

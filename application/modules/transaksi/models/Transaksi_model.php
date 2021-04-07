@@ -17,7 +17,7 @@ class Transaksi_model extends CI_Model
 
     // datatables
     function json() {
-        $this->datatables->select('id_transaksi,nis,nama_kategori,nama_siswa,tgl,tahun_dibayar,jumlah_dibayar,status,bukti_pembayaran');
+        $this->datatables->select('id_transaksi,no_faktur,nis,nama_kategori,nama_siswa,tgl,tahun_dibayar,jumlah_dibayar,status,bukti_pembayaran');
         $this->datatables->from('transaksi');
         //add this line for join
         $this->datatables->join('pembayaran', 'id_pembayaran');
@@ -25,6 +25,7 @@ class Transaksi_model extends CI_Model
         $this->datatables->join('siswa', 'nis');
         $this->datatables->add_column('action', 
             '<a href="'  . site_url('transaksi/read/$1') . '" class="btn btn-info"><i class="fa fa-eye"></i></a> 
+            <a target="_blank" href="'  . site_url('transaksi/invoice/$1') . '" class="btn btn-success"><i class="fa fa-print"></i></a> 
             <a href="'  . site_url('transaksi/update/$1') . '" class="btn btn-warning"><i class="fa fa-edit"></i></a> 
             <a data-href="'  . site_url('transaksi/delete/$1') . '" class="btn btn-danger hapus-data"><i class="fa fa-trash"></i></a>', 'id_transaksi');
         return $this->datatables->generate();
@@ -32,10 +33,11 @@ class Transaksi_model extends CI_Model
 
     // datatables
     function lastjson() {
-        $this->datatables->select('id_transaksi,nis,nama_kategori,nama_siswa,tgl,tahun_dibayar,jumlah_dibayar,status,bukti_pembayaran');
+        $this->datatables->select('id_transaksi,no_faktur,nis,nama_kategori,nama_siswa,tgl,tahun_dibayar,jumlah_dibayar,status,bukti_pembayaran');
         $this->datatables->from('transaksi');
         //add this line for join
         $this->db->order_by('id_transaksi', 'desc');
+        $this->db->limit(10);
         $this->datatables->join('pembayaran', 'id_pembayaran');
         $this->datatables->join('kategori', 'kategori.id_kategori = pembayaran.id_kategori');
         $this->datatables->join('siswa', 'nis');
@@ -57,7 +59,8 @@ class Transaksi_model extends CI_Model
     // get all
     function get_all()
     {
-        $this->db->join('kategori', 'id_kategori', 'left');
+        $this->db->join('pembayaran', 'id_pembayaran');
+        $this->db->join('kategori', 'kategori.id_kategori = pembayaran.id_kategori', 'left');
         $this->db->join('siswa', 'nis', 'left');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
@@ -66,8 +69,11 @@ class Transaksi_model extends CI_Model
     // get data by id
     function get_by_id($id)
     {
-        $this->db->join('kategori', 'id_kategori', 'left');
+        $this->db->join('pembayaran', 'id_pembayaran');
+        $this->db->join('kategori', 'kategori.id_kategori = pembayaran.id_kategori', 'left');
         $this->db->join('siswa', 'nis', 'left');
+        $this->db->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
+        $this->db->join('kelas', 'kelas.id_kelas = siswa.id_kelas');
         $this->db->where($this->id, $id);
         return $this->db->get($this->table)->row();
     }

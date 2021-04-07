@@ -10,7 +10,6 @@
                 </div>
                 <div class="pull-right">
                     <div class="box-title">
-                        <?php echo anchor(site_url('transaksi/create'), '<i class="fas fa-plus"></i> Tambah Data', 'class="btn btn-primary"'); ?>
                         <?php echo anchor(site_url('transaksi/excel'), '<i class="fas fa-sign-out-alt"></i> Excel', 'class="btn btn-success"'); ?>
                         <?php echo anchor(site_url('transaksi/word'), '<i class="fas fa-sign-out-alt"></i> Word', 'class="btn btn-warning"'); ?>
                         
@@ -20,9 +19,10 @@
             <div class="box-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped dt" width="100%" id="#mytable">
-                     <thead>
+                       <thead>
                         <tr>
                             <th>No</th>
+                            <th>Faktur</th>
                             <th>Kategori</th>
                             <th>Nis</th>
                             <th>Siswa</th>
@@ -77,13 +77,28 @@
                 "data": "id_transaksi",
                 "orderable": false
             },
+            {"data": "no_faktur"},
             {"data": "nama_kategori"},
             {"data": "nis"},
             {"data": "nama_siswa"},
             {"data": "tgl"},
             {"data": "tahun_dibayar"},
-            {"data": "jumlah_dibayar"},
-            {"data": "status"},
+            {
+                "data": "jumlah_dibayar",
+                render: $.fn.dataTable.render.number('.', '.', 0, '')
+            },
+            {
+                "data": "status",
+                render : function(data, type, row){
+                    if(data == 'diterima'){
+                        return '<button class="btn btn-success">DITERIMA</button>'
+                    }else if(data == 'pending'){
+                        return '<button class="btn btn-warning">PENDING</button>'
+                    }else{
+                        return '<button class="btn btn-danger">DITOLAK</button>'
+                    }
+                }
+            },
             {
                 "data" : "action",
                 "orderable": false,

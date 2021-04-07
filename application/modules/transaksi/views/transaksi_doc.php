@@ -21,12 +21,12 @@
         <tr>
             <th>No</th>
             <th>Kategori</th>
+            <th>Nis</th>
             <th>Siswa</th>
             <th>Tgl</th>
             <th>Tahun Dibayar</th>
             <th>Jumlah Dibayar</th>
             <th>Status</th>
-            <th>Bukti Pembayaran</th>
 
             </tr><?php
             foreach ($transaksi_data as $transaksi)
@@ -35,12 +35,12 @@
                 <tr>
                     <td><?php echo ++$start ?></td>
                     <td><?php echo $transaksi->nama_kategori ?></td>
+                    <td><?php echo $transaksi->nis ?></td>
                     <td><?php echo $transaksi->nama_siswa ?></td>
                     <td><?php echo $transaksi->tgl ?></td>
                     <td><?php echo $transaksi->tahun_dibayar ?></td>
-                    <td><?php echo $transaksi->jumlah_dibayar ?></td>
+                    <td><?php echo "Rp. " . number_format($transaksi->jumlah_dibayar) ?></td>
                     <td><?php echo $transaksi->status ?></td>
-                    <td><?php echo $transaksi->bukti_pembayaran ?></td>	
                 </tr>
                 <?php
             }

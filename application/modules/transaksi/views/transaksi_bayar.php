@@ -80,7 +80,6 @@
                 </table>
             </div>
             <?php if ($telah_dibayar < $pembayaran->nominal): ?>
-
                 <div class="col-sm-5 invoice-col">
                     <form action="<?php echo base_url('transaksi/create_action') ?>" method="post" enctype="multipart/form-data">
                         <input type="hidden" class="jumlah_bayar" value="<?php echo $pembayaran->nominal ?>">
@@ -112,33 +111,43 @@
                         </table>
                     </form>
                 </div>
-            <?php endif ?>
-        </div>
-        <hr>
-        <!-- /.row -->
-    </section>
+                <?php else: ?>
+                    <div class="col-sm-5 invoice-col">
+                        <table>
 
-    <script>
-        function toRupiah(angka = '0', idr = false) {
-          var rupiah = '';
-          if (angka == null) {
-            angka = '0';
-        }
-        var angkarev = angka.toString().split('').reverse().join('');
-        for (var i = 0; i < angkarev.length; i++) if (i % 3 == 0) rupiah += angkarev.substr(i, 3) + '.';
-            if (idr == true) {
-              return rupiah.split('', rupiah.length - 1).reverse().join('');
-          } else {
-              return 'Rp. ' + rupiah.split('', rupiah.length - 1).reverse().join('');
-          }
-      }
-      
-      $('.jumlah_dibayar').keyup(function(){
-        jumlah_bayar = $('.jumlah_bayar').val()
-        telah_dibayar = $('.telah_dibayar').val() || 0
+                            <tr>
+                                <td></td>
+                                <td><a href="<?php echo base_url('transaksi/create.html?nis=' . $this->uri->segment(3)) ?>" class="btn btn-success btn-block">Kembali</a></td>
+                            </tr>
+                        </table>
+                    </div>
+                <?php endif ?>
+            </div>
+            <hr>
+            <!-- /.row -->
+        </section>
 
-        sisa_bayar = parseInt(jumlah_bayar) - (parseInt($(this).val()) + parseInt(telah_dibayar))
-        $('.sisa_bayar').val(toRupiah(sisa_bayar, true))
+        <script>
+            function toRupiah(angka = '0', idr = false) {
+                var rupiah = '';
+                if (angka == null) {
+                    angka = '0';
+                }
+                var angkarev = angka.toString().split('').reverse().join('');
+                for (var i = 0; i < angkarev.length; i++) if (i % 3 == 0) rupiah += angkarev.substr(i, 3) + '.';
+                    if (idr == true) {
+                      return rupiah.split('', rupiah.length - 1).reverse().join('');
+                  } else {
+                      return 'Rp. ' + rupiah.split('', rupiah.length - 1).reverse().join('');
+                  }
+              }
 
-    })
-</script>
+              $('.jumlah_dibayar').keyup(function(){
+                jumlah_bayar = $('.jumlah_bayar').val()
+                telah_dibayar = $('.telah_dibayar').val() || 0
+
+                sisa_bayar = parseInt(jumlah_bayar) - (parseInt($(this).val()) + parseInt(telah_dibayar))
+                $('.sisa_bayar').val(toRupiah(sisa_bayar, true))
+
+            })
+        </script>
