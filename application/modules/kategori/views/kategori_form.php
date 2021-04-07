@@ -17,18 +17,18 @@
                 <div class="row">
                     <div class="col-md-2"></div>
                     <div class="col-md-8">
-                <form action="<?php echo $action; ?>" method="post">
-	    <div class="form-group <?php if(form_error('nama_kategori')) echo 'has-error'?> ">
+                        <form action="<?php echo $action; ?>" method="post">
+                           <div class="form-group <?php if(form_error('nama_kategori')) echo 'has-error'?> ">
                             <label for="varchar">Nama Kategori</label>
                             <input type="text" class="form-control" name="nama_kategori" id="nama_kategori" placeholder="Nama Kategori" value="<?php echo $nama_kategori; ?>" />
                             <?php echo form_error('nama_kategori', '<small style="color:red">','</small>') ?>
                         </div>
-	    <input type="hidden" name="id_kategori" value="<?php echo $id_kategori; ?>" /> 
-	    <button type="submit" class="btn btn-primary btn-block">SUBMIT</button> 
-	</form>
-                </div>
+                        <input type="hidden" name="id_kategori" value="<?php echo $id_kategori; ?>" /> 
+                        <button type="submit" class="btn btn-primary btn-block">SUBMIT</button> 
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>

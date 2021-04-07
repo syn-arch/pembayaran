@@ -15,15 +15,16 @@
                 </div>
             </div>
             <div class="box-body">
-                 <div class="row">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8">
-                     <table class="table">
-	    <tr><td>Nama Kelas</td><td><?php echo $nama_kelas; ?></td></tr>
-	</table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+               <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                   <table class="table">
+                       <tr><td>Nama Kelas</td><td><?php echo $nama_kelas; ?></td></tr>
+                       <tr><td>Nama Jurusan</td><td><?php echo $nama_jurusan; ?></td></tr>
+                   </table>
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
 </div>

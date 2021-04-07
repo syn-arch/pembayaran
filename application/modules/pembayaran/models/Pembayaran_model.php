@@ -42,8 +42,8 @@ class Pembayaran_model extends CI_Model
     // get all
     function get_all()
     {
-        $this->db->join('kategori', 'id_kategori', 'left');
-        $this->db->join('jurusan', 'id_jurusan', 'left');
+        $this->db->join('kategori', 'id_kategori');
+        $this->db->join('jurusan', 'id_jurusan');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }
@@ -51,14 +51,14 @@ class Pembayaran_model extends CI_Model
     // get data by id
     function get_by_id($id)
     {
-       $this->db->join('kategori', 'id_kategori', 'left');
-       $this->db->join('jurusan', 'id_jurusan', 'left');
-       $this->db->where($this->id, $id);
-       return $this->db->get($this->table)->row();
-   }
-   
+        $this->db->join('kategori', 'id_kategori');
+        $this->db->join('jurusan', 'id_jurusan');
+     $this->db->where($this->id, $id);
+     return $this->db->get($this->table)->row();
+ }
+
     // get total rows
-   function total_rows($q = NULL) {
+ function total_rows($q = NULL) {
     $this->db->like('id_pembayaran', $q);
     $this->db->or_like('id_kategori', $q);
     $this->db->or_like('id_jurusan', $q);

@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('BASEPATH'))
-exit('No direct script access allowed');
+    exit('No direct script access allowed');
 
 class Kelas_model extends CI_Model
 {
@@ -16,21 +16,22 @@ class Kelas_model extends CI_Model
     }
 
     // datatables
-        function json() {
-            $this->datatables->select('id_kelas,nama_kelas');
-            $this->datatables->from('kelas');
+    function json() {
+        $this->datatables->select('id_kelas,nama_kelas, nama_jurusan');
+        $this->datatables->from('kelas');
         //add this line for join
-        //$this->datatables->join('table2', 'kelas.field = table2.field');
-            $this->datatables->add_column('action', 
+        $this->datatables->join('jurusan', 'id_jurusan');
+        $this->datatables->add_column('action', 
             '<a href="'  . site_url('kelas/read/$1') . '" class="btn btn-info"><i class="fa fa-eye"></i></a> 
             <a href="'  . site_url('kelas/update/$1') . '" class="btn btn-warning"><i class="fa fa-edit"></i></a> 
             <a data-href="'  . site_url('kelas/delete/$1') . '" class="btn btn-danger hapus-data"><i class="fa fa-trash"></i></a>', 'id_kelas');
-            return $this->datatables->generate();
-        }
+        return $this->datatables->generate();
+    }
 
     // get all
     function get_all()
     {
+        $this->db->join('jurusan', 'id_jurusan');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }
@@ -38,6 +39,7 @@ class Kelas_model extends CI_Model
     // get data by id
     function get_by_id($id)
     {
+        $this->db->join('jurusan', 'id_jurusan');
         $this->db->where($this->id, $id);
         return $this->db->get($this->table)->row();
     }
@@ -45,8 +47,8 @@ class Kelas_model extends CI_Model
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id_kelas', $q);
-	$this->db->or_like('nama_kelas', $q);
-	$this->db->from($this->table);
+        $this->db->or_like('nama_kelas', $q);
+        $this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -54,8 +56,8 @@ class Kelas_model extends CI_Model
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id_kelas', $q);
-	$this->db->or_like('nama_kelas', $q);
-	$this->db->limit($limit, $start);
+        $this->db->or_like('nama_kelas', $q);
+        $this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 

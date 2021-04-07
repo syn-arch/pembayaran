@@ -20,7 +20,7 @@ class Siswa_model extends CI_Model
         $this->datatables->select('id_siswa,nama_jurusan,nama_kelas,nis,nama_siswa,tgl_lahir,jk,tahun_ajaran');
         $this->datatables->from('siswa');
         //add this line for join
-        $this->datatables->join('jurusan', 'id_jurusan');
+        $this->datatables->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
         $this->datatables->join('kelas', 'id_kelas');
         $this->datatables->add_column('action', 
             '<a href="'  . site_url('siswa/read/$1') . '" class="btn btn-info"><i class="fa fa-eye"></i></a> 
@@ -33,7 +33,7 @@ class Siswa_model extends CI_Model
     function get_all()
     {
         $this->db->join('kelas', 'id_kelas', 'left');
-        $this->db->join('jurusan', 'id_jurusan', 'left');
+        $this->db->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }
@@ -41,69 +41,69 @@ class Siswa_model extends CI_Model
     // get data by id
     function get_by_id($id)
     {
-       $this->db->join('kelas', 'id_kelas', 'left');
-       $this->db->join('jurusan', 'id_jurusan', 'left');
-       $this->db->where($this->id, $id);
-       return $this->db->get($this->table)->row();
-   }
+        $this->db->join('kelas', 'id_kelas', 'left');
+        $this->db->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
+        $this->db->where($this->id, $id);
+        return $this->db->get($this->table)->row();
+    }
 
     // get data by nis
     function get_by_nis($nis)
     {
-       $this->db->join('kelas', 'id_kelas', 'left');
-       $this->db->join('jurusan', 'id_jurusan', 'left');
-       $this->db->where('nis', $nis);
-       return $this->db->get($this->table)->row();
-   }
-   
+        $this->db->join('kelas', 'id_kelas', 'left');
+        $this->db->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
+        $this->db->where('nis', $nis);
+        return $this->db->get($this->table)->row();
+    }
+
     // get total rows
-   function total_rows($q = NULL) {
-    $this->db->like('id_siswa', $q);
-    $this->db->or_like('id_jurusan', $q);
-    $this->db->or_like('id_kelas', $q);
-    $this->db->or_like('nis', $q);
-    $this->db->or_like('nama_siswa', $q);
-    $this->db->or_like('tgl_lahir', $q);
-    $this->db->or_like('jk', $q);
-    $this->db->or_like('tahun_ajaran', $q);
-    $this->db->from($this->table);
-    return $this->db->count_all_results();
-}
+    function total_rows($q = NULL) {
+        $this->db->like('id_siswa', $q);
+        $this->db->or_like('id_jurusan', $q);
+        $this->db->or_like('id_kelas', $q);
+        $this->db->or_like('nis', $q);
+        $this->db->or_like('nama_siswa', $q);
+        $this->db->or_like('tgl_lahir', $q);
+        $this->db->or_like('jk', $q);
+        $this->db->or_like('tahun_ajaran', $q);
+        $this->db->from($this->table);
+        return $this->db->count_all_results();
+    }
 
     // get data with limit and search
-function get_limit_data($limit, $start = 0, $q = NULL) {
-    $this->db->order_by($this->id, $this->order);
-    $this->db->like('id_siswa', $q);
-    $this->db->or_like('id_jurusan', $q);
-    $this->db->or_like('id_kelas', $q);
-    $this->db->or_like('nis', $q);
-    $this->db->or_like('nama_siswa', $q);
-    $this->db->or_like('tgl_lahir', $q);
-    $this->db->or_like('jk', $q);
-    $this->db->or_like('tahun_ajaran', $q);
-    $this->db->limit($limit, $start);
-    return $this->db->get($this->table)->result();
-}
+    function get_limit_data($limit, $start = 0, $q = NULL) {
+        $this->db->order_by($this->id, $this->order);
+        $this->db->like('id_siswa', $q);
+        $this->db->or_like('id_jurusan', $q);
+        $this->db->or_like('id_kelas', $q);
+        $this->db->or_like('nis', $q);
+        $this->db->or_like('nama_siswa', $q);
+        $this->db->or_like('tgl_lahir', $q);
+        $this->db->or_like('jk', $q);
+        $this->db->or_like('tahun_ajaran', $q);
+        $this->db->limit($limit, $start);
+        return $this->db->get($this->table)->result();
+    }
 
     // insert data
-function insert($data)
-{
-    $this->db->insert($this->table, $data);
-}
+    function insert($data)
+    {
+        $this->db->insert($this->table, $data);
+    }
 
     // update data
-function update($id, $data)
-{
-    $this->db->where($this->id, $id);
-    $this->db->update($this->table, $data);
-}
+    function update($id, $data)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->update($this->table, $data);
+    }
 
     // delete data
-function delete($id)
-{
-    $this->db->where($this->id, $id);
-    $this->db->delete($this->table);
-}
+    function delete($id)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->delete($this->table);
+    }
 
 }
 

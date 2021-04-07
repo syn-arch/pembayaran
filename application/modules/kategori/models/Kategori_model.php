@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('BASEPATH'))
-exit('No direct script access allowed');
+    exit('No direct script access allowed');
 
 class Kategori_model extends CI_Model
 {
@@ -16,17 +16,17 @@ class Kategori_model extends CI_Model
     }
 
     // datatables
-        function json() {
-            $this->datatables->select('id_kategori,nama_kategori');
-            $this->datatables->from('kategori');
+    function json() {
+        $this->datatables->select('id_kategori,nama_kategori');
+        $this->datatables->from('kategori');
         //add this line for join
         //$this->datatables->join('table2', 'kategori.field = table2.field');
-            $this->datatables->add_column('action', 
+        $this->datatables->add_column('action', 
             '<a href="'  . site_url('kategori/read/$1') . '" class="btn btn-info"><i class="fa fa-eye"></i></a> 
             <a href="'  . site_url('kategori/update/$1') . '" class="btn btn-warning"><i class="fa fa-edit"></i></a> 
             <a data-href="'  . site_url('kategori/delete/$1') . '" class="btn btn-danger hapus-data"><i class="fa fa-trash"></i></a>', 'id_kategori');
-            return $this->datatables->generate();
-        }
+        return $this->datatables->generate();
+    }
 
     // get all
     function get_all()
@@ -45,8 +45,8 @@ class Kategori_model extends CI_Model
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id_kategori', $q);
-	$this->db->or_like('nama_kategori', $q);
-	$this->db->from($this->table);
+        $this->db->or_like('nama_kategori', $q);
+        $this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -54,8 +54,8 @@ class Kategori_model extends CI_Model
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id_kategori', $q);
-	$this->db->or_like('nama_kategori', $q);
-	$this->db->limit($limit, $start);
+        $this->db->or_like('nama_kategori', $q);
+        $this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 
