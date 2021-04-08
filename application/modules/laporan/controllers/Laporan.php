@@ -11,6 +11,7 @@ class laporan extends CI_Controller
         $this->load->model('laporan_model');
         $this->load->model('kelas/kelas_model');
         $this->load->model('jurusan/jurusan_model');
+        $this->load->model('kategori/kategori_model');
         $this->load->model('pembayaran/pembayaran_model');
         $this->load->library('form_validation');        
         $this->load->library('datatables');
@@ -42,6 +43,44 @@ class laporan extends CI_Controller
 
         $this->load->view('templates/header', $data);
         $this->load->view('laporan/per_siswa', $data);
+        $this->load->view('templates/footer', $data);
+    } 
+
+
+    public function per_kelas()
+    {
+        $id_pembayaran = $this->input->get('id_pembayaran');
+
+        $data['judul'] = 'Laporan Per Kelas';
+        $data['kategori'] = $this->pembayaran_model->get_all();
+
+        if ($id_pembayaran) {
+            $data['pembayaran'] = $this->pembayaran_model->get_by_id($id_pembayaran);
+            $data['laporan'] = $this->laporan_model->get_laporan_per_kelas($id_pembayaran, $data['pembayaran']->id_jurusan);
+        }
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('laporan/per_kelas', $data);
+        $this->load->view('templates/footer', $data);
+    } 
+
+
+    public function per_jurusan()
+    {
+        $id_kategori = $this->input->get('id_kategori');
+        $tahun_angkatan = $this->input->get('tahun_angkatan');
+
+        $data['judul'] = 'Laporan Per jurusan';
+        $data['kategori'] = $this->kategori_model->get_all();
+
+        if ($id_kategori) {
+            $data['kategori'] = $this->kategori_model->get_by_id($this->input->get('id_kategori'));
+            $data['pembayaran'] = $this->pembayaran_model->get_pembayaran($id_kategori, $tahun_angkatan);
+            $data['laporan'] = $this->laporan_model->get_laporan_per_jurusan($id_kategori, $tahun_angkatan);
+        }
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('laporan/per_jurusan', $data);
         $this->load->view('templates/footer', $data);
     } 
 

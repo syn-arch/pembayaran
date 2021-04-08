@@ -92,6 +92,14 @@
                                                 <td><?= $pembayaran->nama_kategori ?></td>
                                             </tr>
                                             <tr>
+                                                <th>Jurusan</th>
+                                                <td><?= $pembayaran->nama_jurusan ?></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tahun Ajaran</th>
+                                                <td><?= $pembayaran->tahun_angkatan ?></td>
+                                            </tr>
+                                            <tr>
                                                 <th>Nominal</th>
                                                 <td><?= "Rp. " . number_format($pembayaran->nominal) ?></td>
                                             </tr>
@@ -114,34 +122,34 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                   <?php $no=1; foreach ($laporan as $row): ?>
-                                                   <tr>
-                                                       <td><?= $no++ ?></td>
-                                                       <td><?= $row['nama_siswa'] ?></td>
-                                                       <td><?= $row['nis'] ?></td>
-                                                       <td><?= $row['jk'] ?></td>
-                                                       <td><?= "Rp. " . number_format($row['jumlah_dibayar']) ?></td>
+                                                    <?php $no=1; foreach ($laporan as $row): ?>
+                                                    <tr>
+                                                        <td><?= $no++ ?></td>
+                                                        <td><?= $row['nama_siswa'] ?></td>
+                                                        <td><?= $row['nis'] ?></td>
+                                                        <td><?= $row['jk'] ?></td>
+                                                        <td><?= "Rp. " . number_format($row['jumlah_dibayar']) ?></td>
 
-                                                       <?php if ($row['nominal'] == 0): ?>
-                                                        <td><?= "Rp. " . number_format($pembayaran->nominal) ?></td>
-                                                        <td><button class="btn btn-danger">BELUM BAYAR</button></td>
-                                                        <?php else: ?>
-                                                           <td><?= "Rp. " . number_format($row['sisa_bayar']) ?></td>
-                                                           <td><?= $row['jumlah_dibayar']  >= $pembayaran->nominal ? '<button class="btn btn-success">LUNAS</button>' : '<button class="btn btn-warning">BELUM LUNAS</button>' ?></td>
-                                                       <?php endif ?>
+                                                        <?php if ($row['nominal'] == 0): ?>
+                                                            <td><?= "Rp. " . number_format($pembayaran->nominal) ?></td>
+                                                            <td><button class="btn btn-danger">BELUM BAYAR</button></td>
+                                                            <?php else: ?>
+                                                                <td><?= "Rp. " . number_format($row['sisa_bayar']) ?></td>
+                                                                <td><?= $row['jumlah_dibayar']  >= $pembayaran->nominal ? '<button class="btn btn-success">LUNAS</button>' : '<button class="btn btn-warning">BELUM LUNAS</button>' ?></td>
+                                                            <?php endif ?>
 
-                                                   </tr>
-                                               <?php endforeach ?>
-                                           </tbody>
-                                       </table>
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
-               </div>
-           </div>
-       <?php endif ?>
+                                                        </tr>
+                                                    <?php endforeach ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endif ?>
 
-   <?php endif ?>
+        <?php endif ?>
 

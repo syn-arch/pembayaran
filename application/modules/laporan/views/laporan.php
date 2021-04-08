@@ -49,19 +49,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="box box-primary box-solid">
-                            <div class="box-header">
-                                <h4 class="box-title">Laporan</h4>
-                            </div>
-                            <div class="box-body text-center">
-                                <h4>LAPORAN PER KATEGORI</h4>
-                            </div>
-                            <div class="box-footer">
-                                <a href="<?php echo base_url('laporan/per_kategori') ?>" class="btn btn-primary btn-block">Selengkapnya</a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
