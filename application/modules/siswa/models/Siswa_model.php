@@ -17,7 +17,7 @@ class Siswa_model extends CI_Model
 
     // datatables
     function json() {
-        $this->datatables->select('id_siswa,nama_jurusan,nama_kelas,nis,nama_siswa,tgl_lahir,jk,tahun_ajaran');
+        $this->datatables->select('id_siswa,nama_jurusan,nama_kelas,nis,nama_siswa,tgl_lahir,jk,tahun_ajaran,email,aktif');
         $this->datatables->from('siswa');
         //add this line for join
         $this->datatables->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
@@ -66,6 +66,7 @@ class Siswa_model extends CI_Model
         $this->db->or_like('tgl_lahir', $q);
         $this->db->or_like('jk', $q);
         $this->db->or_like('tahun_ajaran', $q);
+        $this->db->or_like('email', $q);
         $this->db->from($this->table);
         return $this->db->count_all_results();
     }
@@ -81,6 +82,7 @@ class Siswa_model extends CI_Model
         $this->db->or_like('tgl_lahir', $q);
         $this->db->or_like('jk', $q);
         $this->db->or_like('tahun_ajaran', $q);
+        $this->db->or_like('email', $q);
         $this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '0a284eafa1841c2a93709395032847e140ca563f',
+    'reference' => 'caf79312446ee516c77fd2cdc5ed370edb3e161d',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '0a284eafa1841c2a93709395032847e140ca563f',
+      'reference' => 'caf79312446ee516c77fd2cdc5ed370edb3e161d',
     ),
     'dompdf/dompdf' => 
     array (
@@ -46,6 +46,15 @@
       array (
       ),
       'reference' => '5fa61b65e612ce1ae15f69b3d223cb14ecc60e32',
+    ),
+    'phpmailer/phpmailer' => 
+    array (
+      'pretty_version' => 'v6.4.0',
+      'version' => '6.4.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '050d430203105c27c30efd1dce7aa421ad882d01',
     ),
     'sabberworm/php-css-parser' => 
     array (

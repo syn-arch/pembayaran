@@ -41,6 +41,8 @@
                     <td><?php echo $siswa->tgl_lahir ?></td>
                     <td><?php echo $siswa->jk ?></td>
                     <td><?php echo $siswa->tahun_ajaran ?></td>	
+                    <td><?php echo $siswa->email ?></td> 
+                    <td><?php echo $siswa->aktif ?></td> 
                 </tr>
                 <?php
             }

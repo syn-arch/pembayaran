@@ -26,6 +26,8 @@
                     <tr><td>Tgl Lahir</td><td><?php echo $tgl_lahir; ?></td></tr>
                     <tr><td>Jk</td><td><?php echo $jk; ?></td></tr>
                     <tr><td>Tahun Ajaran</td><td><?php echo $tahun_ajaran; ?></td></tr>
+                    <tr><td>Email</td><td><?php echo $email; ?></td></tr>
+                    <tr><td>Aktif</td><td><?php echo $aktif; ?></td></tr>
                 </table>
             </div>
         </div>

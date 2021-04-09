@@ -14,4 +14,13 @@ class Dashboard extends CI_Controller {
 		$this->load->view('templates/footer', $data, FALSE);
 	}
 
+	public function siswa()
+	{	
+		$data['judul'] = "Dashboard";
+
+		$this->load->view('template_siswa/header', $data, FALSE);
+		$this->load->view('dashboard_siswa', $data, FALSE);
+		$this->load->view('template_siswa/footer', $data, FALSE);
+	}
+
 }

@@ -10,6 +10,9 @@ $route['translate_uri_dashes'] = FALSE;
 $route['login'] = 'auth';
 $route['logout'] = 'auth/logout';
 
+$route['login_siswa'] = 'auth/siswa';
+$route['logout_siswa'] = 'auth/logout_siswa';
+
 // akses user
 $route['user/akses'] = 'akses';
 $route['user/tambah_akses'] = 'akses/tambah';

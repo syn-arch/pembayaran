@@ -1,0 +1,1 @@
+<marquee behavior="" direction=""><h1>SELAMAT DATANG <?= strtoupper($this->session->userdata('nama_siswa')); ?></h1></marquee>

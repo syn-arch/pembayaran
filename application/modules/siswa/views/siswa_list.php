@@ -30,6 +30,8 @@
                             <th>Tgl Lahir</th>
                             <th>Jk</th>
                             <th>Tahun Ajaran</th>
+                            <th>Email</th>
+                            <th>Aktif</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -76,7 +78,25 @@
             {
                 "data": "id_siswa",
                 "orderable": false
-            },{"data": "nama_jurusan"},{"data": "nama_kelas"},{"data": "nis"},{"data": "nama_siswa"},{"data": "tgl_lahir"},{"data": "jk"},{"data": "tahun_ajaran"},
+            },
+            {"data": "nama_jurusan"},
+            {"data": "nama_kelas"},
+            {"data": "nis"},
+            {"data": "nama_siswa"},
+            {"data": "tgl_lahir"},
+            {"data": "jk"},
+            {"data": "tahun_ajaran"},
+            {"data": "email"},
+            {
+                "data": "aktif",
+                render : function(data,type,row){
+                    if(data == '1'){
+                        return 'aktif'
+                    }else{
+                        return 'tidak aktif'
+                    }
+                }
+            },
             {
                 "data" : "action",
                 "orderable": false,

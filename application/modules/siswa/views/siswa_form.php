@@ -66,6 +66,24 @@
                                 <input type="text" class="form-control" name="tahun_ajaran" id="tahun_ajaran" placeholder="Tahun Ajaran" value="<?php echo $tahun_ajaran; ?>" />
                                 <?php echo form_error('tahun_ajaran', '<small style="color:red">','</small>') ?>
                             </div>
+                            <div class="form-group <?php if(form_error('email')) echo 'has-error'?> ">
+                                <label for="int">Email</label>
+                                <input type="text" class="form-control" name="email" id="email" placeholder="Email" value="<?php echo $email; ?>" />
+                                <?php echo form_error('email', '<small style="color:red">','</small>') ?>
+                            </div>
+                            <div class="form-group <?php if(form_error('password')) echo 'has-error'?> ">
+                                <label for="int">Password</label>
+                                <input type="password" class="form-control" name="password" id="password" placeholder="Password"/>
+                                <?php echo form_error('password', '<small style="color:red">','</small>') ?>
+                            </div>
+                            <div class="form-group <?php if(form_error('aktif')) echo 'has-error'?> ">
+                                <label for="enum">Aktif</label>
+                                <select name="aktif" id="aktif" class="form-control">
+                                    <option <?php echo $aktif == '1' ? 'selected': ''  ?> value="1">Aktif</option>
+                                    <option <?php echo $aktif == '0' ? 'selected': ''  ?> value="0">Tidak Aktif</option>
+                                </select>
+                                <?php echo form_error('aktif', '<small style="color:red">','</small>') ?>
+                            </div>
                             <input type="hidden" name="id_siswa" value="<?php echo $id_siswa; ?>" /> 
                             <button type="submit" class="btn btn-primary btn-block">SUBMIT</button> 
                         </form>

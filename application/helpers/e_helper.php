@@ -4,7 +4,7 @@ function cek_login()
 {
 	$ci = get_instance();
 	if (!$ci->session->userdata('login')) {
-		redirect('login');
+		show_404();
 	} else {
 
 		$id_role = $ci->session->userdata('id_role');
