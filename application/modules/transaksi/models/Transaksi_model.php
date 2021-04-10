@@ -16,6 +16,22 @@ class Transaksi_model extends CI_Model
     }
 
     // datatables
+    function json_siswa() {
+        $this->datatables->select('id_transaksi,no_faktur,nis,nama_kategori,nama_siswa,tgl,tahun_dibayar,jumlah_dibayar,status,bukti_pembayaran,transaksi.keterangan');
+        $this->datatables->from('transaksi');
+        //add this line for join
+        $this->datatables->join('pembayaran', 'id_pembayaran');
+        $this->datatables->join('kategori', 'kategori.id_kategori = pembayaran.id_kategori');
+        $this->datatables->join('siswa', 'nis');
+        $this->datatables->where('id_siswa', $this->session->userdata('id_siswa'));
+        $this->datatables->add_column('action', 
+            '<a target="_blank" href="'  . site_url('transaksi/invoice/$1') . '" class="btn btn-primary"><i class="fa fa-print"></i> CETAK</a>', 'id_transaksi
+            ');
+        return $this->datatables->generate();
+    }
+
+
+    // datatables
     function json() {
         $this->datatables->select('id_transaksi,no_faktur,nis,nama_kategori,nama_siswa,tgl,tahun_dibayar,jumlah_dibayar,status,bukti_pembayaran');
         $this->datatables->from('transaksi');
@@ -52,6 +68,7 @@ class Transaksi_model extends CI_Model
     {
         $this->db->select_sum('jumlah_dibayar', 'telah_dibayar');
         $this->db->where('nis', $nis);
+        $this->db->where('status', 'diterima');
         $this->db->where('id_pembayaran', $id_pembayaran);
         return $this->db->get('transaksi')->row()->telah_dibayar;
     }
@@ -69,6 +86,16 @@ class Transaksi_model extends CI_Model
     // get data by id
     function get_by_id($id)
     {
+
+        if ($this->session->userdata('nis')) {
+            $trs = $this->db->get_where('transaksi', ['nis' => $this->session->userdata('nis'), 'id_transaksi' => $id])->row_array();
+
+            if ($trs['nis'] != $this->session->userdata('nis')) {
+                die('INVALID');
+            }
+        }
+
+        $this->db->select('*, transaksi.keterangan');
         $this->db->join('pembayaran', 'id_pembayaran');
         $this->db->join('kategori', 'kategori.id_kategori = pembayaran.id_kategori', 'left');
         $this->db->join('siswa', 'nis', 'left');

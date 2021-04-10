@@ -94,7 +94,10 @@ class Auth extends CI_Controller {
 					$session = [
 						'loginsiswa' => true,
 						'id_siswa' => $siswa['id_siswa'],
-						'nama_siswa' => $siswa['nama_siswa']
+						'nis' => $siswa['nis'],
+						'nama_siswa' => $siswa['nama_siswa'],
+						'id_kelas' => $siswa['id_kelas'],
+						'id_jurusan' => $siswa['id_jurusan']
 					];
 
 					$this->session->set_userdata($session);

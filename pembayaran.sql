@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 08, 2021 at 09:14 AM
+-- Generation Time: Apr 10, 2021 at 08:51 AM
 -- Server version: 10.1.40-MariaDB
 -- PHP Version: 7.3.5
 
@@ -249,7 +249,7 @@ CREATE TABLE `pengaturan` (
 --
 
 INSERT INTO `pengaturan` (`id_pengaturan`, `nama_aplikasi`, `logo`, `smtp_host`, `smtp_email`, `smtp_username`, `smtp_password`, `smtp_port`) VALUES
-(1, 'APP PEMBAYARAN', 'layers.png', 'ssl://smtp.gmail.com', 'smtp.email456@gmail.com', 'smtp.email456@gmail.com', 'adminsmtp123', 465);
+(1, 'APP PEMBAYARAN', 'layers.png', 'ssl://smtp.gmail.com', 'shadowRose069@gmail.com', 'BBC PEMBAYARAN', 'roseShadow255', 465);
 
 -- --------------------------------------------------------
 
@@ -285,24 +285,49 @@ CREATE TABLE `siswa` (
   `jk` enum('L','P') NOT NULL,
   `tahun_ajaran` int(11) NOT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL
+  `password` varchar(255) DEFAULT NULL,
+  `aktif` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `siswa`
 --
 
-INSERT INTO `siswa` (`id_siswa`, `id_jurusan`, `id_kelas`, `nis`, `nama_siswa`, `tgl_lahir`, `jk`, `tahun_ajaran`, `email`, `password`) VALUES
-(1, 1, 1, 17180009, 'Siti', '2001-12-15', 'P', 2020, NULL, NULL),
-(2, 2, 2, 171810001, 'adiatna', '2021-04-06', 'L', 2020, NULL, NULL),
-(3, 3, 3, 171810005, 'Muhammad Rivaldi', '2021-04-06', 'L', 2020, NULL, NULL),
-(4, 2, 2, 1718100003, 'Dimas Subagja', '2001-12-12', 'L', 2020, NULL, NULL),
-(5, 2, 2, 1718100002, 'M Dicki Alfauzan', '2002-12-15', 'L', 2020, NULL, NULL),
-(6, 2, 2, 171810004, 'Misal Audrie', '2001-12-12', 'L', 2020, NULL, NULL),
-(7, 2, 4, 17181, 'sahrul', '2001-12-12', 'L', 2020, NULL, NULL),
-(8, 2, 4, 1718110000, 'sukmana', '2003-12-15', 'L', 2020, NULL, NULL),
-(9, 3, 3, 1718100020, 'nadaha', '2001-12-15', 'L', 2020, NULL, NULL),
-(10, 1, 5, 171810002, 'Dian', '2001-12-15', 'P', 20202, NULL, NULL);
+INSERT INTO `siswa` (`id_siswa`, `id_jurusan`, `id_kelas`, `nis`, `nama_siswa`, `tgl_lahir`, `jk`, `tahun_ajaran`, `email`, `password`, `aktif`) VALUES
+(1, 1, 1, 17180009, 'Siti', '2001-12-15', 'P', 2020, NULL, NULL, 0),
+(2, 2, 2, 171810001, 'adiatna', '2001-12-15', 'L', 2020, 'dyatna.id@gmail.com', '$2y$10$JLe2bA/73bWcxQmHqABkgO/GeG6ZBVDA8.bx7pKphtu/dn2VAhN/2', 1),
+(3, 3, 3, 171810005, 'Muhammad Rivaldi', '2021-04-06', 'L', 2020, NULL, NULL, 0),
+(4, 2, 2, 1718100003, 'Dimas Subagja', '2001-12-12', 'L', 2020, NULL, NULL, 0),
+(5, 2, 2, 1718100002, 'M Dicki Alfauzan', '2002-12-15', 'L', 2020, NULL, NULL, 0),
+(6, 2, 2, 171810004, 'Misal Audrie', '2001-12-12', 'L', 2020, NULL, NULL, 0),
+(7, 2, 4, 17181, 'sahrul', '2001-12-12', 'L', 2020, NULL, NULL, 0),
+(8, 2, 4, 1718110000, 'sukmana', '2003-12-15', 'L', 2020, NULL, NULL, 0),
+(9, 3, 3, 1718100020, 'nadaha', '2001-12-15', 'L', 2020, NULL, NULL, 0),
+(10, 1, 5, 171810002, 'Dian', '2001-12-15', 'P', 20202, '', NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `token_siswa`
+--
+
+CREATE TABLE `token_siswa` (
+  `id` int(11) NOT NULL,
+  `id_siswa` int(11) NOT NULL,
+  `tgl` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `token` varchar(128) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `token_siswa`
+--
+
+INSERT INTO `token_siswa` (`id`, `id_siswa`, `tgl`, `token`) VALUES
+(1, 2, '2021-04-09 08:55:41', 'T72ZQETF4PIY9DUUCKNJDZLGED06KRKU'),
+(2, 2, '2021-04-09 08:56:37', 'O14SH9XGQNR2PC2CB2P5XJCAN09DQPT7'),
+(3, 2, '2021-04-09 09:01:21', 'XO4RXFA6F9BRCQEKQILVZHD6EOPE1IQE'),
+(4, 2, '2021-04-09 09:03:29', 'DYS48PLJVNTPFZ245AERFEE1U8U3WFVL'),
+(5, 2, '2021-04-09 09:19:38', '00O9JHC23Z49IM9L2B9TF4EKC4ZDUWZQ');
 
 -- --------------------------------------------------------
 
@@ -342,11 +367,11 @@ CREATE TABLE `transaksi` (
 
 INSERT INTO `transaksi` (`id_transaksi`, `no_faktur`, `id_pembayaran`, `nis`, `tgl`, `tahun_dibayar`, `jumlah_dibayar`, `status`, `bukti_pembayaran`, `keterangan`) VALUES
 (7, 'FK-0704210001', 6, 17180009, '2021-04-07 13:22:49', 2021, 50000, 'diterima', NULL, NULL),
-(8, 'FK-0704210002', 5, 171810001, '2021-04-07 13:23:01', 2021, 50000, 'diterima', NULL, NULL),
 (9, 'FK-0704210003', 4, 171810005, '2021-04-07 13:23:33', 2021, 50000, 'diterima', NULL, NULL),
 (10, 'FK-0704210004', 5, 1718100002, '2021-04-07 13:23:46', 2021, 50000, 'diterima', NULL, NULL),
 (11, 'FK-0704210005', 5, 171810004, '2021-04-07 13:32:35', 2021, 25000, 'diterima', NULL, NULL),
-(12, 'FK-0704210006', 5, 171810004, '2021-04-07 14:48:55', 2021, 25000, 'diterima', NULL, NULL);
+(12, 'FK-0704210006', 5, 171810004, '2021-04-07 14:48:55', 2021, 25000, 'diterima', NULL, NULL),
+(13, 'FK-0904210001', 5, 171810001, '2021-04-09 11:18:37', 2021, 50000, 'diterima', 'cc35c5c65d3aeecbe882204ee43c8d80.jpeg', '');
 
 -- --------------------------------------------------------
 
@@ -445,6 +470,12 @@ ALTER TABLE `siswa`
   ADD PRIMARY KEY (`id_siswa`);
 
 --
+-- Indexes for table `token_siswa`
+--
+ALTER TABLE `token_siswa`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `token_user`
 --
 ALTER TABLE `token_user`
@@ -533,6 +564,12 @@ ALTER TABLE `siswa`
   MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT for table `token_siswa`
+--
+ALTER TABLE `token_siswa`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `token_user`
 --
 ALTER TABLE `token_user`
@@ -542,7 +579,7 @@ ALTER TABLE `token_user`
 -- AUTO_INCREMENT for table `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

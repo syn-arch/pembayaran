@@ -54,6 +54,7 @@ function _upload($name, $url, $path)
 	$config['upload_path'] = './assets/img/' . $path . '/';
 	$config['allowed_types'] = 'pdf|jpg|png|jpeg';
 	$config['max_size']  = '4048';
+	$config['encrypt_name'] = TRUE;
 
 	$ci->load->library('upload', $config);
 

@@ -63,6 +63,11 @@
                                 <img src="<?php echo base_url('assets/img/transaksi/') . $bukti_pembayaran ?>" alt="" class="img-responsive">
                                 <?php echo form_error('bukti_pembayaran', '<small style="color:red">','</small>') ?>
                             </div>
+                             <div class="form-group <?php if(form_error('keterangan')) echo 'has-error'?> ">
+                                <label for="int">Keterangan</label>
+                                <textarea name="keterangan" id="keterangan" placeholder="Keterangan" cols="30" rows="10" class="form-control"><?= $keterangan ?></textarea>
+                                <?php echo form_error('keterangan', '<small style="color:red">','</small>') ?>
+                            </div>
                             <input type="hidden" name="id_transaksi" value="<?php echo $id_transaksi; ?>" /> 
                             <button type="submit" class="btn btn-primary btn-block">SUBMIT</button> 
                         </form>

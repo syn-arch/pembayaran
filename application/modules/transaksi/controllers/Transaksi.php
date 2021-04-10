@@ -11,6 +11,7 @@ class Transaksi extends CI_Controller
         $this->load->model('Transaksi_model');
         $this->load->model('siswa/siswa_model');
         $this->load->model('kategori/kategori_model');
+        $this->load->model('metode_pembayaran/metode_pembayaran_model');
         $this->load->model('pembayaran/pembayaran_model');
         $this->load->library('form_validation');        
         $this->load->library('datatables');
@@ -25,9 +26,23 @@ class Transaksi extends CI_Controller
         $this->load->view('templates/footer', $data);
     } 
 
+    public function siswa()
+    {
+        $data['judul'] = 'Data Transaksi';
+
+        $this->load->view('template_siswa/header', $data);
+        $this->load->view('transaksi/transaksi_siswa', $data);
+        $this->load->view('template_siswa/footer', $data);
+    } 
+
     public function json() {
         header('Content-Type: application/json');
         echo $this->Transaksi_model->json();
+    }
+
+    public function json_siswa() {
+        header('Content-Type: application/json');
+        echo $this->Transaksi_model->json_siswa();
     }
 
     public function lastjson() {
@@ -38,6 +53,7 @@ class Transaksi extends CI_Controller
     public function invoice($id) 
     {
         $row = $this->Transaksi_model->get_by_id($id);
+        
         if ($row) {
 
             $this->load->library('pdf');
@@ -69,6 +85,7 @@ class Transaksi extends CI_Controller
               'jumlah_dibayar' => $row->jumlah_dibayar,
               'status' => $row->status,
               'bukti_pembayaran' => $row->bukti_pembayaran,
+              'keterangan' => $row->keterangan
           );
 
             $data['judul'] = 'Detail Transaksi';
@@ -76,6 +93,34 @@ class Transaksi extends CI_Controller
             $this->load->view('templates/header', $data);
             $this->load->view('transaksi/transaksi_read', $data);
             $this->load->view('templates/footer', $data);
+        } else {
+            $this->session->set_flashdata('error', 'Data tidak ditemukan');
+            redirect(site_url('transaksi'));
+        }
+    }
+
+    public function read_siswa($id) 
+    {
+        $row = $this->Transaksi_model->get_by_id($id);
+        if ($row) {
+            $data = array(
+              'id_transaksi' => $row->id_transaksi,
+              'nama_kategori' => $row->nama_kategori,
+              'nama_siswa' => $row->nama_siswa,
+              'nis' => $row->nis,
+              'tgl' => $row->tgl,
+              'tahun_dibayar' => $row->tahun_dibayar,
+              'jumlah_dibayar' => $row->jumlah_dibayar,
+              'status' => $row->status,
+              'bukti_pembayaran' => $row->bukti_pembayaran,
+              'keterangan' => $row->keterangan
+          );
+
+            $data['judul'] = 'Detail Transaksi';
+
+            $this->load->view('template_siswa/header', $data);
+            $this->load->view('transaksi/transaksi_read', $data);
+            $this->load->view('template_siswa/footer', $data);
         } else {
             $this->session->set_flashdata('error', 'Data tidak ditemukan');
             redirect(site_url('transaksi'));
@@ -92,6 +137,16 @@ class Transaksi extends CI_Controller
         $this->load->view('templates/footer', $data);
     }
 
+    public function create_siswa() 
+    {
+        $data['judul'] = 'Transaksi Baru';
+        $data['kategori'] = $this->pembayaran_model->get_kategori_pembayaran($this->session->userdata('nis'));
+
+        $this->load->view('template_siswa/header', $data);
+        $this->load->view('transaksi/transaksi_new_siswa', $data);
+        $this->load->view('template_siswa/footer', $data);
+    }
+
     public function bayar($nis, $id_pembayaran) 
     {
         $data['judul'] = 'Pembayaran';
@@ -104,7 +159,31 @@ class Transaksi extends CI_Controller
         $this->load->view('templates/footer', $data);
     }
 
-    public function create_action() 
+    public function pilih_metode_pembayaran($nis, $id_pembayaran) 
+    {
+        $data['judul'] = 'Pembayaran';
+        $data['pembayaran'] = $this->pembayaran_model->get_by_id($id_pembayaran);
+        $data['metode_pembayaran'] = $this->metode_pembayaran_model->get_all();
+
+        $this->load->view('template_siswa/header', $data);
+        $this->load->view('transaksi/transaksi_pilih_metode_pembayaran', $data);
+        $this->load->view('template_siswa/footer', $data);
+    }
+
+
+    public function bayar_siswa($nis, $id_pembayaran) 
+    {
+        $data['judul'] = 'Pembayaran';
+        $data['pembayaran'] = $this->pembayaran_model->get_by_id($id_pembayaran);
+        $data['siswa'] = $this->siswa_model->get_by_nis($nis);
+        $data['telah_dibayar'] = $this->Transaksi_model->get_telah_dibayar($nis, $id_pembayaran);
+
+        $this->load->view('template_siswa/header', $data);
+        $this->load->view('transaksi/transaksi_bayar_siswa', $data);
+        $this->load->view('template_siswa/footer', $data);
+    }
+
+    public function create_action($siswa = false) 
     {
 
         $data = array(
@@ -112,9 +191,14 @@ class Transaksi extends CI_Controller
             'nis' => $this->input->post('nis',TRUE),
             'no_faktur' => $this->input->post('no_faktur',TRUE),
             'jumlah_dibayar' => $this->input->post('jumlah_dibayar',TRUE),
-            'tahun_dibayar' => date('Y'),
-            'status' => 'diterima',
+            'tahun_dibayar' => date('Y')
         );
+
+        if ($siswa == false) {
+            $data['status'] = 'diterima';
+        }else{
+            $data['status'] = 'pending';
+        }
 
         if ($_FILES['bukti']['name']) {
             $data['bukti_pembayaran'] = _upload('bukti', 'transaksi/bayar/' . $this->input->post('nis') . '/' . $this->input->post('id_pembayaran'), 'transaksi');
@@ -122,7 +206,13 @@ class Transaksi extends CI_Controller
 
         $this->Transaksi_model->insert($data);
         $this->session->set_flashdata('success', 'Ditambah');
-        redirect(site_url('transaksi'));
+
+        if ($siswa == false) {
+            redirect(site_url('transaksi'));
+        }else{
+            redirect(site_url('transaksi/create_siswa'));
+        }
+
     }
 
     public function update($id) 
@@ -130,6 +220,7 @@ class Transaksi extends CI_Controller
         $row = $this->Transaksi_model->get_by_id($id);
 
         if ($row) {
+
             $data = array(
                 'button' => 'Update',
                 'action' => site_url('transaksi/update_action'),
@@ -141,6 +232,7 @@ class Transaksi extends CI_Controller
                 'jumlah_dibayar' => set_value('jumlah_dibayar', $row->jumlah_dibayar),
                 'status' => set_value('status', $row->status),
                 'bukti_pembayaran' => set_value('bukti_pembayaran', $row->bukti_pembayaran),
+                'keterangan' => set_value('keterangan', $row->keterangan)
             );
 
             $data['judul'] = 'Ubah Transaksi';
@@ -171,7 +263,8 @@ class Transaksi extends CI_Controller
                 'tgl' => $this->input->post('tgl',TRUE),
                 'tahun_dibayar' => $this->input->post('tahun_dibayar',TRUE),
                 'jumlah_dibayar' => $this->input->post('jumlah_dibayar',TRUE),
-                'status' => $this->input->post('status',TRUE)
+                'status' => $this->input->post('status',TRUE),
+                'keterangan' => $this->input->post('keterangan',TRUE)
             );
 
             if ($_FILES['bukti']['name']) {

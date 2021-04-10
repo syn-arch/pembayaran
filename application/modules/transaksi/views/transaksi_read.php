@@ -27,6 +27,7 @@
                      <tr><td>Jumlah Dibayar</td><td><?php echo $jumlah_dibayar; ?></td></tr>
                      <tr><td>Status</td><td><?php echo $status; ?></td></tr>
                      <tr><td>Bukti Pembayaran</td><td><img src="<?php echo base_url('assets/img/transaksi/') . $bukti_pembayaran ?>" width="200" alt="" class="img-responsive"></td></tr>
+                     <tr><td>Keterangan</td><td><?php echo $keterangan; ?></td></tr>
                  </table>
              </div>
          </div>

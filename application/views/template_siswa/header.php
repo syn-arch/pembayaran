@@ -93,9 +93,20 @@
         <ul class="sidebar-menu" data-widget="tree">
           <li class="header">MAIN MENU</li>
           <li><a href="<?php echo base_url('dashboard/siswa') ?>"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-          <li><a href="<?php echo base_url('transaksi/create_siswa') ?>"><i class="fas fa-credit-card"></i> <span>Transaksi</span></a></li>
-          <li><a href="<?php echo base_url('laporan/laporan_siswa') ?>"><i class="fas fa-book"></i> <span>Laporan</span></a></li>
-          <li><a href="<?php echo base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-credit-card"></i>
+              <span>Transaksi</span>
+              <span class="pull-right-container">
+                <i class="fas fa-chevron-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li><a href="<?php echo base_url('transaksi/create_siswa') ?>"> Transaksi Baru</a></li>
+              <li><a href="<?php echo base_url('transaksi/siswa') ?>"> Transaksi Saya</a></li>
+            </ul>
+          </li>
+          <li><a href="<?php echo base_url('auth/logout_siswa') ?>"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
         </ul>
         <!-- /.sidebar-menu -->
       </section>
