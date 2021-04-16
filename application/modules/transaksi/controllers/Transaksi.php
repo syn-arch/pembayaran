@@ -183,6 +183,33 @@ class Transaksi extends CI_Controller
         $this->load->view('template_siswa/footer', $data);
     }
 
+    public function tambah_rek() 
+    {
+        $data['judul'] = 'Informasi Pengirim';
+        $data['rek'] = $this->db->get_where('siswa', ['id_siswa' => $this->session->userdata('id_siswa')])->row_array();
+
+        $this->load->view('template_siswa/header', $data);
+        $this->load->view('transaksi/transaksi_tambah_rek', $data);
+        $this->load->view('template_siswa/footer', $data);
+    }
+
+    public function tambah_rek_aksi()
+    {
+        $post = $this->input->post();
+
+        $data = [
+            'atas_nama' => $post['atas_nama'],
+            'no_rekening' => $post['no_rekening'],
+            'bank' => $post['bank']
+        ];
+
+        $this->db->where('id_siswa', $this->session->userdata('id_siswa'));
+        $this->db->update('siswa', $data);
+
+        $this->session->set_flashdata('success', 'Diubah');
+        redirect(site_url('transaksi/tambah_rek'));
+    }
+
     public function create_action($siswa = false) 
     {
 
@@ -232,7 +259,10 @@ class Transaksi extends CI_Controller
                 'jumlah_dibayar' => set_value('jumlah_dibayar', $row->jumlah_dibayar),
                 'status' => set_value('status', $row->status),
                 'bukti_pembayaran' => set_value('bukti_pembayaran', $row->bukti_pembayaran),
-                'keterangan' => set_value('keterangan', $row->keterangan)
+                'keterangan' => set_value('keterangan', $row->keterangan),
+                'atas_nama' => set_value('atas_nama', $row->atas_nama),
+                'no_rekening' => set_value('no_rekening', $row->no_rekening),
+                'bank' => set_value('bank', $row->bank),
             );
 
             $data['judul'] = 'Ubah Transaksi';

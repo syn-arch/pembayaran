@@ -87,6 +87,7 @@
                             <div class="form-group id_jurusan <?php if(form_error('id_jurusan')) echo 'has-error'?>">
                                <label for="id_jurusan">Jurusan</label>
                                <select name="id_jurusan" id="id_jurusan" class="form-control">
+                                <option value="">-- Pilih Jurusan --</option>
                                    <?php foreach ($jurusan as $row): ?>
                                        <option value="<?php echo $row['id_jurusan'] ?>" <?php echo set_value('id_jurusan') == $row['id_jurusan'] ? 'selected' : '' ?>><?php echo $row['nama_jurusan'] ?></option>
                                    <?php endforeach ?>
