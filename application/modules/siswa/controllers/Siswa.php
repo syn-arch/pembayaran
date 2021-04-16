@@ -3,6 +3,12 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+require './vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Siswa extends CI_Controller
 {
     function __construct()
@@ -207,81 +213,164 @@ class Siswa extends CI_Controller
 
     public function _rules() 
     {
-     $this->form_validation->set_rules('id_jurusan', 'id jurusan', 'trim|required|numeric');
-     $this->form_validation->set_rules('id_kelas', 'id kelas', 'trim|required|numeric');
-     $this->form_validation->set_rules('nis', 'nis', 'trim|required|numeric');
-     $this->form_validation->set_rules('nama_siswa', 'nama siswa', 'trim|required');
-     $this->form_validation->set_rules('tgl_lahir', 'tgl lahir', 'trim|required');
-     $this->form_validation->set_rules('jk', 'jk', 'trim|required');
-     $this->form_validation->set_rules('tahun_ajaran', 'tahun ajaran', 'trim|required|numeric');
+        $this->form_validation->set_rules('id_jurusan', 'id jurusan', 'trim|required|numeric');
+        $this->form_validation->set_rules('id_kelas', 'id kelas', 'trim|required|numeric');
+        $this->form_validation->set_rules('nis', 'nis', 'trim|required|numeric');
+        $this->form_validation->set_rules('nama_siswa', 'nama siswa', 'trim|required');
+        $this->form_validation->set_rules('tgl_lahir', 'tgl lahir', 'trim|required');
+        $this->form_validation->set_rules('jk', 'jk', 'trim|required');
+        $this->form_validation->set_rules('tahun_ajaran', 'tahun ajaran', 'trim|required|numeric');
 
-     $this->form_validation->set_rules('id_siswa', 'id_siswa', 'trim');
-     $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
- }
-
- public function excel()
- {
-    $this->load->helper('exportexcel');
-    $namaFile = "siswa.xls";
-    $judul = "siswa";
-    $tablehead = 0;
-    $tablebody = 1;
-    $nourut = 1;
-        //penulisan header
-    header("Pragma: public");
-    header("Expires: 0");
-    header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
-    header("Content-Type: application/force-download");
-    header("Content-Type: application/octet-stream");
-    header("Content-Type: application/download");
-    header("Content-Disposition: attachment;filename=" . $namaFile . "");
-    header("Content-Transfer-Encoding: binary ");
-
-    xlsBOF();
-
-    $kolomhead = 0;
-    xlsWriteLabel($tablehead, $kolomhead++, "No");
-    xlsWriteLabel($tablehead, $kolomhead++, "Jurusan");
-    xlsWriteLabel($tablehead, $kolomhead++, "Kelas");
-    xlsWriteLabel($tablehead, $kolomhead++, "Nis");
-    xlsWriteLabel($tablehead, $kolomhead++, "Nama Siswa");
-    xlsWriteLabel($tablehead, $kolomhead++, "Tgl Lahir");
-    xlsWriteLabel($tablehead, $kolomhead++, "Jk");
-    xlsWriteLabel($tablehead, $kolomhead++, "Tahun Ajaran");
-
-    foreach ($this->Siswa_model->get_all() as $data) {
-        $kolombody = 0;
-
-            //ubah xlsWriteLabel menjadi xlsWriteNumber untuk kolom numeric
-        xlsWriteNumber($tablebody, $kolombody++, $nourut);
-        xlsWriteLabel($tablebody, $kolombody++, $data->nama_jurusan);
-        xlsWriteLabel($tablebody, $kolombody++, $data->nama_kelas);
-        xlsWriteNumber($tablebody, $kolombody++, $data->nis);
-        xlsWriteLabel($tablebody, $kolombody++, $data->nama_siswa);
-        xlsWriteLabel($tablebody, $kolombody++, $data->tgl_lahir);
-        xlsWriteLabel($tablebody, $kolombody++, $data->jk);
-        xlsWriteNumber($tablebody, $kolombody++, $data->tahun_ajaran);
-
-        $tablebody++;
-        $nourut++;
+        $this->form_validation->set_rules('id_siswa', 'id_siswa', 'trim');
+        $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
     }
 
-    xlsEOF();
-    exit();
-}
+    public function excel()
+    {
+        $this->load->helper('exportexcel');
+        $namaFile = "siswa.xls";
+        $judul = "siswa";
+        $tablehead = 0;
+        $tablebody = 1;
+        $nourut = 1;
+        //penulisan header
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header("Content-Disposition: attachment;filename=" . $namaFile . "");
+        header("Content-Transfer-Encoding: binary ");
 
-public function word()
-{
-    header("Content-type: application/vnd.ms-word");
-    header("Content-Disposition: attachment;Filename=siswa.doc");
+        xlsBOF();
 
-    $data = array(
-        'siswa_data' => $this->Siswa_model->get_all(),
-        'start' => 0
-    );
+        $kolomhead = 0;
+        xlsWriteLabel($tablehead, $kolomhead++, "No");
+        xlsWriteLabel($tablehead, $kolomhead++, "Jurusan");
+        xlsWriteLabel($tablehead, $kolomhead++, "Kelas");
+        xlsWriteLabel($tablehead, $kolomhead++, "Nis");
+        xlsWriteLabel($tablehead, $kolomhead++, "Nama Siswa");
+        xlsWriteLabel($tablehead, $kolomhead++, "Tgl Lahir");
+        xlsWriteLabel($tablehead, $kolomhead++, "Jk");
+        xlsWriteLabel($tablehead, $kolomhead++, "Tahun Ajaran");
 
-    $this->load->view('siswa/siswa_doc',$data);
-}
+        foreach ($this->Siswa_model->get_all() as $data) {
+            $kolombody = 0;
+
+            //ubah xlsWriteLabel menjadi xlsWriteNumber untuk kolom numeric
+            xlsWriteNumber($tablebody, $kolombody++, $nourut);
+            xlsWriteLabel($tablebody, $kolombody++, $data->nama_jurusan);
+            xlsWriteLabel($tablebody, $kolombody++, $data->nama_kelas);
+            xlsWriteNumber($tablebody, $kolombody++, $data->nis);
+            xlsWriteLabel($tablebody, $kolombody++, $data->nama_siswa);
+            xlsWriteLabel($tablebody, $kolombody++, $data->tgl_lahir);
+            xlsWriteLabel($tablebody, $kolombody++, $data->jk);
+            xlsWriteNumber($tablebody, $kolombody++, $data->tahun_ajaran);
+
+            $tablebody++;
+            $nourut++;
+        }
+
+        xlsEOF();
+        exit();
+    }
+
+    public function word()
+    {
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment;Filename=siswa.doc");
+
+        $data = array(
+            'siswa_data' => $this->Siswa_model->get_all(),
+            'start' => 0
+        );
+
+        $this->load->view('siswa/siswa_doc',$data);
+    }
+
+    public function template()
+    {
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->setActiveSheetIndex(0)
+        ->setCellValue('A1', 'Jurusan')
+        ->setCellValue('B1', 'Kelas')
+        ->setCellValue('C1', 'NIS')
+        ->setCellValue('D1', 'Nama Siswa')
+        ->setCellValue('E1', 'Tanggal Lahir (DDD-MM-YY)')
+        ->setCellValue('F1', 'Jk')
+        ->setCellValue('G1', 'Tahun Ajaran')
+        ;                      
+
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="Template Siswa.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+    }
+
+    public function import()
+    {
+        $file = explode('.', $_FILES['excel']['name']);
+        $extension = end($file);
+
+        if($extension == 'csv') {
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
+        } else {
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        }
+
+        $spreadsheet = $reader->load($_FILES['excel']['tmp_name']);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray();
+
+        $this->db->trans_start();
+
+        for($i = 1;$i < count($sheetData); $i++)
+        {
+            $nama_jurusan = $sheetData[$i]['0'];
+            $nama_kelas = $sheetData[$i]['1'];
+
+            $jurusan = $this->db->get_where('jurusan', ['nama_jurusan' => $nama_jurusan])->row_array();
+            if ($jurusan) {
+                $id_jurusan = $jurusan['id_jurusan'];
+            }else{
+                $this->db->insert('jurusan', [
+                    'nama_jurusan' => $nama_jurusan
+                ]);
+                $id_jurusan = $this->db->insert_id();
+            }
+
+            $kelas = $this->db->get_where('kelas', ['nama_kelas' => $nama_kelas])->row_array();
+            if ($kelas) {
+                $id_kelas = $kelas['id_kelas'];
+            }else{
+                $this->db->insert('kelas', [
+                   'nama_kelas' => $nama_kelas,
+                   'id_jurusan' => $id_jurusan
+               ]);
+                $id_kelas = $this->db->insert_id();
+            }
+
+            if ($sheetData[$i]['0'] != '') {
+                $data = [
+                    'id_jurusan' => $id_jurusan,
+                    'id_kelas' => $id_kelas,
+                    'nis' => $sheetData[$i]['2'],
+                    'nama_siswa' => $sheetData[$i]['3'],
+                    'tgl_lahir' => $sheetData[$i]['4'],
+                    'jk' => $sheetData[$i]['5'],
+                    'tahun_ajaran' => $sheetData[$i]['6']
+                ];
+
+                $this->db->insert('siswa', $data);
+            }
+        }
+
+        $this->db->trans_complete();
+
+        $this->session->set_flashdata('success', 'Di import');
+        redirect('siswa','refresh');
+    }
 
 }
 

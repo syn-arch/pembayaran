@@ -42,6 +42,10 @@ class Auth extends CI_Controller {
 
 					$this->session->set_userdata($session);
 
+					if ($user['petugas']) {
+						redirect('transaksi','refresh');
+					}
+
 					redirect('dashboard','refresh');
 					
 				} else {
