@@ -5,9 +5,10 @@ class user_model extends CI_Model {
 
 	public function get_user_json()
 	{
-		$this->datatables->select('id_user, nama_user, jk, alamat, telepon, email, gambar, nama_role');
+		$this->datatables->select('id_user, nama_user, jk, alamat, telepon, email, gambar, nama_role, petugas, id_jurusan, nama_jurusan');
 		$this->datatables->from('user');
 		$this->datatables->join('role', 'id_role', 'left');
+		$this->datatables->join('jurusan', 'id_jurusan', 'left');
 		$this->datatables->where('nama_user !=', 'SUPERADMIN');
 		return $this->datatables->generate();
 	}
@@ -15,6 +16,7 @@ class user_model extends CI_Model {
 	public function get_user($id = '')
 	{
 		if ($id == '') {
+			$this->db->where('nama_user !=', 'SUPERADMIN');
 			$this->db->join('role', 'id_role', 'left');
 			return $this->db->get('user')->result_array();
 		}else {
@@ -41,7 +43,9 @@ class user_model extends CI_Model {
 			'email' => htmlspecialchars($post['email']),
 			'password' => password_hash(htmlspecialchars($post['pw1']), PASSWORD_DEFAULT),
 			'gambar' => _upload('gambar', 'user/tambah', 'user'),
-			'id_role' => htmlspecialchars($post['id_role'])
+			'id_role' => htmlspecialchars($post['id_role']),
+			'petugas' => htmlspecialchars($post['petugas']),
+			'id_jurusan' => htmlspecialchars($post['id_jurusan'])
 		];
 
 		$this->db->insert('user', $data);
@@ -55,7 +59,9 @@ class user_model extends CI_Model {
 			'alamat' => htmlspecialchars($post['alamat']),
 			'email' => htmlspecialchars($post['email']),
 			'telepon' => htmlspecialchars($post['telepon']),
-			'id_role' => htmlspecialchars($post['id_role'])
+			'id_role' => htmlspecialchars($post['id_role']),
+			'petugas' => htmlspecialchars($post['petugas']),
+			'id_jurusan' => htmlspecialchars($post['id_jurusan'])
 		];
 
 		if ($_FILES['gambar']['name']) {

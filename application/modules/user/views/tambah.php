@@ -76,6 +76,23 @@
                                </select>
                                <?php echo form_error('id_role', '<small style="color:red">','</small>') ?>
                            </div>
+                             <div class="form-group <?php if(form_error('petugas')) echo 'has-error'?>">
+                               <label for="petugas">Petugas ?</label><br>
+                               <select name="petugas" id="petugas" class="form-control petugas">
+                                   <option value="0" <?php echo set_value('petugas') == "0" ? 'selected' : '' ?>>TIDAK</option>
+                                   <option value="1" <?php echo set_value('petugas') == "1" ? 'selected' : '' ?>>IYA</option>
+                               </select>
+                               <?php echo form_error('petugas', '<small style="color:red">','</small>') ?>
+                           </div>
+                            <div class="form-group id_jurusan <?php if(form_error('id_jurusan')) echo 'has-error'?>">
+                               <label for="id_jurusan">Jurusan</label>
+                               <select name="id_jurusan" id="id_jurusan" class="form-control">
+                                   <?php foreach ($jurusan as $row): ?>
+                                       <option value="<?php echo $row['id_jurusan'] ?>" <?php echo set_value('id_jurusan') == $row['id_jurusan'] ? 'selected' : '' ?>><?php echo $row['nama_jurusan'] ?></option>
+                                   <?php endforeach ?>
+                               </select>
+                               <?php echo form_error('id_jurusan', '<small style="color:red">','</small>') ?>
+                           </div>
                            <div class="form-group">
                                <button type="submit" class="btn btn-primary btn-block">Submit</button>
                            </div>
@@ -86,3 +103,16 @@
         </div>
     </div>
 </div>
+
+<script>
+
+    $('.id_jurusan').hide();
+
+    $('.petugas').change(function(){
+        if ($(this).val() == 1) {
+            $('.id_jurusan').show()
+        }else{
+            $('.id_jurusan').hide()
+        }
+    })
+</script>

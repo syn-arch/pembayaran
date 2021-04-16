@@ -33,6 +33,10 @@ class Transaksi_model extends CI_Model
 
     // datatables
     function json() {
+        if ($this->session->userdata('petugas') == 1) {
+            $this->datatables->where('siswa.id_jurusan', $this->session->userdata('id_jurusan'));
+        }
+
         $this->datatables->select('id_transaksi,no_faktur,nis,nama_kategori,nama_siswa,tgl,tahun_dibayar,jumlah_dibayar,status,bukti_pembayaran');
         $this->datatables->from('transaksi');
         //add this line for join

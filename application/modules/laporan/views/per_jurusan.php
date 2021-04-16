@@ -48,6 +48,7 @@
 						</div>
 					</div>
 					<div class="pull-right">
+						<a href="<?php echo base_url('laporan/export_perjurusan/' . $this->input->get('id_kategori') . '/' . $this->input->get('tahun_angkatan') ) ?>" class="btn btn-success"><i class="fas fa-sign-out-alt"></i> Export Excel</a>
 						<a href="<?php echo base_url('laporan') ?>" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
 					</div>
 				</div>

@@ -15,6 +15,7 @@ class user extends MX_Controller {
 		parent::__construct();
 		cek_login();
 		$this->load->model('user/user_model');
+		$this->load->model('jurusan/jurusan_model');
 	}
 
 	public function get_user_json()
@@ -63,6 +64,7 @@ class user extends MX_Controller {
 
 		$data['judul'] = "Tambah user";
 		$data['role'] = $this->db->get('role')->result_array();
+		$data['jurusan'] = $this->db->get('jurusan')->result_array();
 
 		$this->load->view('templates/header', $data, FALSE);
 		$this->load->view('user/tambah', $data, FALSE);
@@ -89,6 +91,7 @@ class user extends MX_Controller {
 		$data['judul'] = "Ubah user";
 		$data['role'] = $this->db->get('role')->result_array();
 		$data['user'] = $this->user_model->get_user($id);
+		$data['jurusan'] = $this->db->get('jurusan')->result_array();
 
 		$this->load->view('templates/header', $data, FALSE);
 		$this->load->view('user/ubah', $data, FALSE);

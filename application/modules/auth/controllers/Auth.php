@@ -35,7 +35,9 @@ class Auth extends CI_Controller {
 						'id_user' => $user['id_user'],
 						'id_role' => $user['id_role'],
 						'nama_user' => $user['nama_user'],
-						'level' => $user['nama_role']
+						'level' => $user['nama_role'],
+						'petugas' => $user['petugas'],
+						'id_jurusan' => $user['id_jurusan']
 					];
 
 					$this->session->set_userdata($session);
@@ -306,6 +308,80 @@ class Auth extends CI_Controller {
 		}
 	}
 
+	private function _send_email_pw_siswa($token, $email)
+	{
+		$pengaturan = $this->db->get('pengaturan')->row_array();
+
+		$mail = new PHPMailer(true);
+		try {
+		    //Server settings
+		    // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                     
+			$mail->isSMTP();                                           
+			$mail->Host       = $pengaturan['smtp_host'];                   
+			$mail->SMTPAuth   = true;                                  
+			$mail->Username   = $pengaturan['smtp_email'];                    
+			$mail->Password   = $pengaturan['smtp_password'];                        
+			$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;        
+			$mail->Port       = 465;                                   
+
+		    //Recipients
+			$mail->setFrom('noreply@mail.com', $pengaturan['nama_aplikasi']);
+			$mail->addAddress($email);    
+
+		    // Content
+			$mail->isHTML(true);  
+			$mail->Subject = 'Lupa Password';
+			$mail->Body    = '
+			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+			<html xmlns="http://www.w3.org/1999/xhtml">
+			<head>
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+			<title>Lupa Password</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			</head>
+			<body style="margin: 0; padding: 0;">
+			<table border="0" cellpadding="0" cellspacing="0" width="100%"> 
+			<tr>
+			<td style="padding: 10px 0 30px 0;">
+			<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
+			<tr>
+			<td align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
+			<img target="_blank" src="'. base_url('assets/img/pengaturan/') . $pengaturan['logo'] .'" alt="Lupa Password" width="300" height="300" style="display: block;" />
+			</td>
+			</tr>
+			<tr>
+			<td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+			<td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
+			<b>Lupa Password</b>
+			</td>
+			</tr>
+			<tr>
+			<td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+			Klik tautan dibawah untuk mengatur ulang password anda!
+			</td>
+			</tr>
+			<tr>
+			<td><a href="' . base_url('auth/verify_password_siswa?email='. $email . '&token=' . $token) . '">RESET PASSWORD</a></td>
+			</tr>
+			</table>
+			</td>
+			</tr>
+			</table>
+			</td>
+			</tr>
+			</table>
+			</body>
+			</html>';
+
+			$mail->send();
+
+		} catch (Exception $e) {
+			echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+		}
+	}
+
 	public function lupa_password()
 	{
 		$this->form_validation->set_rules('email', 'email', 'required');
@@ -339,6 +415,39 @@ class Auth extends CI_Controller {
 		$this->load->view('auth/lupa_password');
 	}
 
+	public function lupa_password_siswa()
+	{
+		$this->form_validation->set_rules('email', 'email', 'required');
+
+		if ($this->form_validation->run()) {
+
+			$siswa = $this->db->get_where('siswa', ['email' => $this->input->post('email')])->row_array();
+
+			if ($siswa) {
+
+				$token = acak(32);
+
+				$token_siswa = [
+					'id_siswa' => $siswa['id_siswa'],
+					'token' => $token
+				];
+
+				$this->db->insert('token_siswa', $token_siswa);
+
+				$this->_send_email_pw_siswa($token, $siswa['email']);
+
+				$this->session->set_flashdata('message', 'Periksa email anda untuk mengatur ulang password anda');
+				redirect('login','refresh');
+			}else{
+				$this->session->set_flashdata('error', 'Email tidak ditemukan!');
+				redirect('auth/lupa_password','refresh');
+			}
+
+		}
+
+		$this->load->view('auth/lupa_password_siswa');
+	}
+
 	public function verify()
 	{
 		$email = $this->input->get('email');
@@ -351,6 +460,28 @@ class Auth extends CI_Controller {
 			if ($token_user) {
 				$this->session->set_userdata('reset_email', $email);
 				$this->changePassword();
+			} else {
+				$this->session->set_flashdata('error', 'Lupa Password Gagal, Token Salah');
+				redirect('auth');
+			}
+		} else {
+			$this->session->set_flashdata('error', 'Lupa Password Gagal, Email Tidak Ditemukan');
+			redirect('auth');
+		}
+	}
+
+	public function verify_password_siswa()
+	{
+		$email = $this->input->get('email');
+		$token = $this->input->get('token');
+
+		$siswa = $this->db->get_where('siswa', ['email' => $email])->row_array();
+
+		if ($siswa) {
+			$token_siswa = $this->db->get_where('token_siswa', ['token' => $token])->row_array();
+			if ($token_siswa) {
+				$this->session->set_userdata('reset_email', $email);
+				$this->changePasswordSiswa();
 			} else {
 				$this->session->set_flashdata('error', 'Lupa Password Gagal, Token Salah');
 				redirect('auth');
@@ -415,6 +546,36 @@ class Auth extends CI_Controller {
 
 			$this->session->set_flashdata('message', 'Password berhasil diubah, silahkan login kembali');
 			redirect('auth');
+		}
+	}
+
+	public function changePasswordSiswa()
+	{
+		if (!$this->session->userdata('reset_email')) {
+			show_404();
+		}
+
+		$this->form_validation->set_rules('pw1', 'Password Baru', 'trim|required|matches[pw2]');
+		$this->form_validation->set_rules('pw2', 'Konfirmasi Password', 'trim|required|matches[pw1]');
+
+		if ($this->form_validation->run() == false) {
+			$this->load->view('reset_password');
+		} else {
+			$password = password_hash($this->input->post('pw1'), PASSWORD_DEFAULT);
+			$email = $this->session->userdata('reset_email');
+
+			$siswa = $this->db->get('siswa', ['email' => $email])->row_array();
+
+			$this->db->set('password', $password);
+			$this->db->where('email', $email);
+			$this->db->update('siswa');
+
+			$this->session->unset_userdata('reset_email');
+
+			$this->db->delete('token_siswa', ['id_siswa' => $siswa['id_user']]);
+
+			$this->session->set_flashdata('message', 'Password berhasil diubah, silahkan login kembali');
+			redirect('auth/siswa');
 		}
 	}
 }

@@ -16,6 +16,17 @@ $(function () {
             { "data": "telepon" },
             { "data": "email" },
             { "data": "nama_role" },
+            { 
+                "data": "petugas",
+                render : function (data, type, row) {
+                    if (data == '0') {
+                        return 'TIDAK'
+                    }else{
+                        return 'IYA'
+                    }
+                }
+            },
+            { "data": "nama_jurusan" },
             {
                 "data": "id_user",
                 "render": function (data, type, row) {

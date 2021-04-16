@@ -43,6 +43,7 @@
                             </div>
                         </div>
                         <div class="pull-right">
+                            <a href="<?php echo base_url('laporan/export_perkelas/' . $this->input->get('id_pembayaran') ) ?>" class="btn btn-success"><i class="fas fa-sign-out-alt"></i> Export Excel</a>
                             <a href="<?php echo base_url('laporan') ?>" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
                         </div>
                     </div>
@@ -94,27 +95,27 @@
                                             $this->db->where('siswa.id_kelas', $row['id_kelas']);
                                             $sudah_bayar = $this->db->get('transaksi')->row_array()['sudah_bayar'];
 
-                                             ?>
+                                            ?>
 
                                             <tr>
-                                               <td><?= $no++ ?></td>
-                                               <td><?= $row['nama_kelas'] ?></td>
-                                               <td><?= "Rp. " . number_format($row['telah_dibayar']) ?></td>
-                                               <td><?= "Rp. " . number_format(($pembayaran->nominal * $row['jml_siswa']) -  $row['telah_dibayar']) ?></td>
-                                               <td><?= $row['jml_siswa'] ?></td>
-                                               <td><?= $sudah_bayar ?></td>
-                                               <td><?= $row['jml_siswa'] - $sudah_bayar ?></td>
-                                           </tr>
-                                       <?php endforeach ?>
-                                   </tbody>
-                               </table>
-                           </div>
-                       </div>
-                   </div>
-               </div>
-           </div>
-       </div>
-   </div>
+                                             <td><?= $no++ ?></td>
+                                             <td><?= $row['nama_kelas'] ?></td>
+                                             <td><?= "Rp. " . number_format($row['telah_dibayar']) ?></td>
+                                             <td><?= "Rp. " . number_format(($pembayaran->nominal * $row['jml_siswa']) -  $row['telah_dibayar']) ?></td>
+                                             <td><?= $row['jml_siswa'] ?></td>
+                                             <td><?= $sudah_bayar ?></td>
+                                             <td><?= $row['jml_siswa'] - $sudah_bayar ?></td>
+                                         </tr>
+                                     <?php endforeach ?>
+                                 </tbody>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
 
 <?php endif ?>
 

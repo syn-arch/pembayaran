@@ -26,6 +26,8 @@
                                 <th>Telepon</th>
                                 <th>Email</th>
                                 <th>Level</th>
+                                <th>Petugas</th>
+                                <th>Jurusan</th>
                                 <th><i class="fa fa-cogs"></i></th>
                             </tr>
                         </thead>

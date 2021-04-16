@@ -58,6 +58,8 @@
           <!-- /.col -->
           <div class="col-xs-8">
             <a href="<?php echo base_url('auth/daftar_siswa') ?>">Belum punya akun ?</a>
+            <br>
+            <a href="<?php echo base_url('auth/lupa_password_siswa') ?>">Lupa Password ?</a>
           </div>
           <!-- /.col -->
           <div class="col-xs-4">
