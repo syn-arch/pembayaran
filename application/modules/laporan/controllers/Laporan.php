@@ -242,15 +242,17 @@ class laporan extends CI_Controller
         foreach ($lap as $index => $row) {
             $kolombody = 0;
 
+            $pembayaran_nominal = $pembayaran[$index]->nominal ?? 0;
+
             //ubah xlsWriteLabel menjadi xlsWriteNumber untuk kolom numeric
             xlsWriteNumber($tablebody, $kolombody++, $nourut);
             xlsWriteLabel($tablebody, $kolombody++, $row['nama_jurusan']);
-            xlsWriteLabel($tablebody, $kolombody++, $pembayaran[$index]->nominal);
+            xlsWriteLabel($tablebody, $kolombody++, $pembayaran_nominal);
             xlsWriteLabel($tablebody, $kolombody++, $row['jml_kelas']);
             xlsWriteLabel($tablebody, $kolombody++, $row['jml_siswa']);
-            xlsWriteLabel($tablebody, $kolombody++, $row['jml_siswa'] * $pembayaran[$index]->nominal);
+            xlsWriteLabel($tablebody, $kolombody++, $row['jml_siswa'] * $pembayaran_nominal);
             xlsWriteLabel($tablebody, $kolombody++, $row['telah_dibayar']);
-            xlsWriteLabel($tablebody, $kolombody++, $row['jml_siswa'] * $pembayaran[$index]->nominal - $row['telah_dibayar'] );
+            xlsWriteLabel($tablebody, $kolombody++, $row['jml_siswa'] * $pembayaran_nominal - $row['telah_dibayar'] );
 
             $tablebody++;
             $nourut++;

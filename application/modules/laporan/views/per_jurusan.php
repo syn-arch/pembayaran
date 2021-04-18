@@ -85,15 +85,18 @@
 									</thead>
 									<tbody>
 										<?php $no=1; foreach ($laporan as $index => $row): ?>
+										<?php 
+										$pembayaran_nominal = $pembayaran[$index]->nominal ?? 0;
+										 ?>
 										<tr>
 											<td><?= $no++ ?></td>
 											<td><?= $row['nama_jurusan'] ?></td>
-											<td><?= "Rp. " . number_format($pembayaran[$index]->nominal) ?></td>
+											<td><?= "Rp. " . number_format($pembayaran_nominal) ?></td>
 											<td><?= $row['jml_kelas'] ?></td>
 											<td><?= $row['jml_siswa'] ?></td>
-											<td><?= "Rp. " . number_format($row['jml_siswa'] * $pembayaran[$index]->nominal) ?></td>
+											<td><?= "Rp. " . number_format($row['jml_siswa'] * $pembayaran_nominal) ?></td>
 											<td><?= "Rp. " . number_format($row['telah_dibayar']) ?></td>
-											<td><?= "Rp. " . number_format($row['jml_siswa'] * $pembayaran[$index]->nominal - $row['telah_dibayar']) ?></td>
+											<td><?= "Rp. " . number_format($row['jml_siswa'] * $pembayaran_nominal - $row['telah_dibayar']) ?></td>
 										</tr>
 									<?php endforeach ?>
 								</tbody>

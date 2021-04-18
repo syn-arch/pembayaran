@@ -233,9 +233,7 @@ class Auth extends CI_Controller {
 			$mail->send();
 
 		} catch (Exception $e) {
-			echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-			echo "<br>";
-			echo "Silahkan Coba Lagi";
+			echo "Email gagal dikirim. Silahkan Coba Lagi";
 			die;
 		}
 	}
@@ -311,7 +309,8 @@ class Auth extends CI_Controller {
 			$mail->send();
 
 		} catch (Exception $e) {
-			echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+			echo "Email gagal dikirim. Silahkan Coba Lagi";
+			die;
 		}
 	}
 
@@ -385,7 +384,9 @@ class Auth extends CI_Controller {
 			$mail->send();
 
 		} catch (Exception $e) {
-			echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+			// echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+			echo "Email gagal dikirim. Silahkan Coba Lagi";
+			die;
 		}
 	}
 
