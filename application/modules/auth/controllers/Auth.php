@@ -234,6 +234,8 @@ class Auth extends CI_Controller {
 
 		} catch (Exception $e) {
 			echo "Email gagal dikirim. Silahkan Coba Lagi";
+			echo "<br>";
+			echo "Mesage : {$mail->ErrorInfo}";
 			die;
 		}
 	}
