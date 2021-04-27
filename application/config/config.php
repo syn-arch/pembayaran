@@ -381,7 +381,7 @@ $config['encryption_key'] = 'randomstring';
 |
 */
 $config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = 'e_pos_session';
+$config['sess_cookie_name'] = 'pembayaran_session';
 $config['sess_expiration'] = 0;
 $config['sess_save_path'] = NULL;
 $config['sess_match_ip'] = FALSE;

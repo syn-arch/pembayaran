@@ -17,7 +17,7 @@ class Siswa_model extends CI_Model
 
     // datatables
     function json() {
-        $this->datatables->select('id_siswa,nama_jurusan,nama_kelas,nis,nama_siswa,tgl_lahir,jk,tahun_ajaran,email,aktif');
+        $this->datatables->select('id_siswa,nama_jurusan,nama_kelas,nis,nama_siswa,tgl_lahir,jk,tahun_ajaran,email,aktif,barcode');
         $this->datatables->from('siswa');
         //add this line for join
         $this->datatables->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
@@ -44,6 +44,7 @@ class Siswa_model extends CI_Model
         $this->db->join('kelas', 'id_kelas', 'left');
         $this->db->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
         $this->db->where($this->id, $id);
+        $this->db->or_where('barcode', $id);
         return $this->db->get($this->table)->row();
     }
 
@@ -59,6 +60,7 @@ class Siswa_model extends CI_Model
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id_siswa', $q);
+        $this->db->or_like('barcode', $q);
         $this->db->or_like('id_jurusan', $q);
         $this->db->or_like('id_kelas', $q);
         $this->db->or_like('nis', $q);
@@ -75,6 +77,7 @@ class Siswa_model extends CI_Model
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id_siswa', $q);
+        $this->db->or_like('barcode', $q);
         $this->db->or_like('id_jurusan', $q);
         $this->db->or_like('id_kelas', $q);
         $this->db->or_like('nis', $q);

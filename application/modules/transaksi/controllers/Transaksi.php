@@ -170,6 +170,11 @@ class Transaksi extends CI_Controller
         $this->load->view('template_siswa/footer', $data);
     }
 
+    public function get_telah_dibayar($nis, $id_pembayaran)
+    {
+        echo $this->Transaksi_model->get_telah_dibayar($nis, $id_pembayaran);
+    }
+
 
     public function bayar_siswa($nis, $id_pembayaran) 
     {
@@ -212,7 +217,6 @@ class Transaksi extends CI_Controller
 
     public function create_action($siswa = false) 
     {
-
         $data = array(
             'id_pembayaran' => $this->input->post('id_pembayaran',TRUE),
             'nis' => $this->input->post('nis',TRUE),

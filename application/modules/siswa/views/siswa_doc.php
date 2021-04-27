@@ -20,6 +20,7 @@
     <table class="word-table" style="margin-bottom: 10px">
         <tr>
             <th>No</th>
+            <th>Barcode</th>
             <th>Jurusan</th>
             <th>Kelas</th>
             <th>Nis</th>
@@ -27,6 +28,8 @@
             <th>Tgl Lahir</th>
             <th>Jk</th>
             <th>Tahun Ajaran</th>
+            <th>Email</th>
+            <th>Aktif</th>
 
             </tr><?php
             foreach ($siswa_data as $siswa)
@@ -34,6 +37,7 @@
                 ?>
                 <tr>
                     <td><?php echo ++$start ?></td>
+                    <td><?php echo $siswa->barcode ?></td>
                     <td><?php echo $siswa->nama_jurusan ?></td>
                     <td><?php echo $siswa->nama_kelas ?></td>
                     <td><?php echo $siswa->nis ?></td>
@@ -42,7 +46,7 @@
                     <td><?php echo $siswa->jk ?></td>
                     <td><?php echo $siswa->tahun_ajaran ?></td>	
                     <td><?php echo $siswa->email ?></td> 
-                    <td><?php echo $siswa->aktif ?></td> 
+                    <td><?php echo $siswa->aktif == '1' ? 'AKTIF' : 'TIDAK AKTIF' ?></td> 
                 </tr>
                 <?php
             }

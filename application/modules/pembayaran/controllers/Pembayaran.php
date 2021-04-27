@@ -15,6 +15,22 @@ class Pembayaran extends CI_Controller
         $this->load->library('datatables');
     }
 
+    public function get_by_id($id = '')
+    {
+        $this->db->join('kategori', 'id_kategori');
+        echo json_encode($this->db->get_where('pembayaran', ['id_pembayaran' => $id])->row_array());
+    }
+
+    public function get_kategori_siswa_json($barcode)
+    {
+        $siswa = $this->db->get_where('siswa',['barcode' => $barcode])->row_array();
+
+        $this->db->where('id_jurusan', $siswa['id_jurusan']);
+        $this->db->where('tahun_angkatan', $siswa['tahun_ajaran']);
+        $this->db->join('kategori', 'id_kategori');
+        echo json_encode($this->db->get('pembayaran')->result_array());
+    }
+
     public function index()
     {
         $data['judul'] = 'Data Pembayaran';

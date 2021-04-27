@@ -38,6 +38,11 @@
                                 </select>
                                 <?php echo form_error('id_kelas', '<small style="color:red">','</small>') ?>
                             </div>
+                            <div class="form-group <?php if(form_error('barcode')) echo 'has-error'?> ">
+                                <label for="int">Barcode</label>
+                                <input type="text" class="form-control" name="barcode" id="barcode" placeholder="Barcode" value="<?php echo $barcode; ?>" />
+                                <?php echo form_error('barcode', '<small style="color:red">','</small>') ?>
+                            </div>
                             <div class="form-group <?php if(form_error('nis')) echo 'has-error'?> ">
                                 <label for="int">Nis</label>
                                 <input type="text" class="form-control" name="nis" id="nis" placeholder="Nis" value="<?php echo $nis; ?>" />

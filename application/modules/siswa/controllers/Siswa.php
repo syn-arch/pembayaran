@@ -53,11 +53,22 @@ class Siswa extends CI_Controller
         echo $this->Siswa_model->json();
     }
 
+    public function get_siswa($id = '')
+    {
+        $row = $this->Siswa_model->get_by_id($id);
+        if ($row) {
+            echo json_encode($row);
+        }else{
+            echo "error";
+        }
+    }
+
     public function read($id) 
     {
         $row = $this->Siswa_model->get_by_id($id);
         if ($row) {
             $data = array(
+              'barcode' => $row->barcode,
               'id_siswa' => $row->id_siswa,
               'nama_jurusan' => $row->nama_jurusan,
               'nama_kelas' => $row->nama_kelas,
@@ -87,6 +98,7 @@ class Siswa extends CI_Controller
             'button' => 'Create',
             'action' => site_url('siswa/create_action'),
             'id_siswa' => set_value('id_siswa'),
+            'barcode' => set_value('barcode'),
             'id_jurusan' => set_value('id_jurusan'),
             'id_kelas' => set_value('id_kelas'),
             'nis' => set_value('nis'),
@@ -115,6 +127,7 @@ class Siswa extends CI_Controller
             $this->create();
         } else {
             $data = array(
+              'barcode' => $this->input->post('barcode',TRUE),
               'id_jurusan' => $this->input->post('id_jurusan',TRUE),
               'id_kelas' => $this->input->post('id_kelas',TRUE),
               'nis' => $this->input->post('nis',TRUE),
@@ -142,6 +155,7 @@ class Siswa extends CI_Controller
                 'button' => 'Update',
                 'action' => site_url('siswa/update_action'),
                 'id_siswa' => set_value('id_siswa', $row->id_siswa),
+                'barcode' => set_value('barcode', $row->barcode),
                 'id_jurusan' => set_value('id_jurusan', $row->id_jurusan),
                 'id_kelas' => set_value('id_kelas', $row->id_kelas),
                 'nis' => set_value('nis', $row->nis),
@@ -176,6 +190,7 @@ class Siswa extends CI_Controller
         } else {
 
             $data = array(
+                'barcode' => $this->input->post('barcode',TRUE),
                 'id_jurusan' => $this->input->post('id_jurusan',TRUE),
                 'id_kelas' => $this->input->post('id_kelas',TRUE),
                 'nis' => $this->input->post('nis',TRUE),
@@ -247,6 +262,7 @@ class Siswa extends CI_Controller
 
         $kolomhead = 0;
         xlsWriteLabel($tablehead, $kolomhead++, "No");
+        xlsWriteLabel($tablehead, $kolomhead++, "barcode");
         xlsWriteLabel($tablehead, $kolomhead++, "Jurusan");
         xlsWriteLabel($tablehead, $kolomhead++, "Kelas");
         xlsWriteLabel($tablehead, $kolomhead++, "Nis");
@@ -260,6 +276,7 @@ class Siswa extends CI_Controller
 
             //ubah xlsWriteLabel menjadi xlsWriteNumber untuk kolom numeric
             xlsWriteNumber($tablebody, $kolombody++, $nourut);
+            xlsWriteLabel($tablebody, $kolombody++, $data->barcode);
             xlsWriteLabel($tablebody, $kolombody++, $data->nama_jurusan);
             xlsWriteLabel($tablebody, $kolombody++, $data->nama_kelas);
             xlsWriteNumber($tablebody, $kolombody++, $data->nis);
@@ -300,6 +317,7 @@ class Siswa extends CI_Controller
         ->setCellValue('E1', 'Tanggal Lahir (DDD-MM-YY)')
         ->setCellValue('F1', 'Jk')
         ->setCellValue('G1', 'Tahun Ajaran')
+        ->setCellValue('H1', 'Barcode')
         ;                      
 
         $writer = new Xlsx($spreadsheet);
@@ -359,7 +377,8 @@ class Siswa extends CI_Controller
                     'nama_siswa' => $sheetData[$i]['3'],
                     'tgl_lahir' => $sheetData[$i]['4'],
                     'jk' => $sheetData[$i]['5'],
-                    'tahun_ajaran' => $sheetData[$i]['6']
+                    'tahun_ajaran' => $sheetData[$i]['6'],
+                    'barcode' => $sheetData[$i]['7']
                 ];
 
                 $this->db->insert('siswa', $data);

@@ -43,7 +43,7 @@ if (!$user) {
   <script src="<?php echo base_url('vendor/sweetalert/sweetalert.min.js') ?>"></script>
   
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini <?= $judul == 'Transaksi Baru' ? 'sidebar-collapse' : '' ?>">
   <div class="wrapper">
 
     <!-- Main Header -->

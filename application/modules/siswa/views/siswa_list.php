@@ -24,6 +24,7 @@
                        <thead>
                         <tr>
                             <th>No</th>
+                            <th>Barcode</th>
                             <th>Jurusan</th>
                             <th>Kelas</th>
                             <th>Nis</th>
@@ -112,6 +113,7 @@
                 "data": "id_siswa",
                 "orderable": false
             },
+            {"data": "barcode"},
             {"data": "nama_jurusan"},
             {"data": "nama_kelas"},
             {"data": "nis"},

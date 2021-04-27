@@ -19,6 +19,7 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                  <table class="table">
+                    <tr><td>Barcode</td><td><?php echo $barcode; ?></td></tr>
                     <tr><td>Jurusan</td><td><?php echo $nama_jurusan; ?></td></tr>
                     <tr><td>Kelas</td><td><?php echo $nama_kelas; ?></td></tr>
                     <tr><td>Nis</td><td><?php echo $nis; ?></td></tr>
