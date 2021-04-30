@@ -25,11 +25,11 @@
   <div class="black"></div>
   <div class="login-box">
     <div class="login-logo">
-      <a href="<?php echo base_url() ?>"><b>SELAMAT DATANG</b></a>
+      <a href="<?php echo base_url() ?>"><b>VERIFIKASI EMAIL</b></a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
-      <p class="login-box-msg">Silahkan masukan email dan password anda</p>
+      <p class="login-box-msg">Silahkan masukan email aktif anda</p>
 
       <?php if ($error = $this->session->flashdata('error')): ?>
         <span class="alert-error d-error hidden"><?php echo $error ?></span>
@@ -44,24 +44,30 @@
         <span class="alert-success d-message hidden"><?php echo $message ?></span>
       <?php endif ?>
 
+      <?php if ($err = validation_errors()): ?>
+        <div class="alert alert-danger">
+          <?php echo $err ?>
+        </div>
+      <?php endif ?>
+
 
       <form method="post">
         <div class="form-group has-feedback">
-          <input autocomplete="off"  autofocus="" type="text" class="form-control nis" placeholder="NIS" required="" name="nis">
+          <input autocomplete="off"  autofocus="" type="email" class="form-control email" placeholder="Email" required="" name="email">
           <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
-          <input autocomplete="off" type="password" class="form-control" placeholder="Password" required="" name="password">
-          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          <input autocomplete="off" type="password" class="form-control" placeholder="Password Baru" required="" name="pw1">
+          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <input autocomplete="off" type="password" class="form-control" placeholder="Konfirmasi Password Baru" required="" name="pw2">
+          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
         </div>
         <div class="row">
           <!-- /.col -->
-          <div class="col-xs-8">
-            <a href="<?php echo base_url('auth/lupa_password_siswa') ?>">Lupa Password ?</a>
-          </div>
-          <!-- /.col -->
-          <div class="col-xs-4">
-            <button type="submit" class="btn btn-primary btn-block btn-flat">Masuk</button>
+          <div class="col-xs-12">
+            <button type="submit" class="btn btn-primary btn-block btn-flat">Submit</button>
           </div>
           <!-- /.col -->
         </div>

@@ -43,7 +43,8 @@ class Laporan_model extends CI_Model
             FROM transaksi
             RIGHT JOIN siswa USING(nis)
             JOIN pembayaran ON transaksi.id_pembayaran = pembayaran.id_pembayaran OR transaksi.id_pembayaran IS NULL
-            WHERE id_kelas = $id_kelas
+            WHERE id_kelas = $id_kelas AND
+            status = 'diterima'
             GROUP BY nis
         ";
 
@@ -66,6 +67,7 @@ class Laporan_model extends CI_Model
         $this->db->where('id_pembayaran', $id_pembayaran);
         $this->db->or_where('id_pembayaran is null');
         $this->db->where('kelas.id_jurusan', $id_jurusan);
+        $this->db->where('status', 'diterima');
         $this->db->group_by('kelas.id_kelas');
         return $this->db->get('transaksi')->result_array();
     }
@@ -85,6 +87,7 @@ class Laporan_model extends CI_Model
         $this->db->join('jurusan', 'siswa.id_jurusan = jurusan.id_jurusan');
         $this->db->join('kelas', 'siswa.id_kelas = kelas.id_kelas');
         $this->db->join('pembayaran', 'id_pembayaran', 'left');
+        $this->db->where('status', 'diterima');
         $this->db->where('pembayaran.id_tahun_ajaran', $id_tahun_ajaran);
         $this->db->where('id_kategori', $id_kategori);
         $this->db->or_where('id_pembayaran is null');

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2021 at 08:51 AM
+-- Generation Time: May 01, 2021 at 12:16 AM
 -- Server version: 10.1.40-MariaDB
 -- PHP Version: 7.3.5
 
@@ -61,7 +61,25 @@ INSERT INTO `akses_role` (`akses_role`, `id_menu`, `id_role`) VALUES
 (237, 73, 1),
 (238, 72, 1),
 (239, 75, 1),
-(240, 76, 1);
+(240, 76, 1),
+(241, 77, 1),
+(242, 1, 3),
+(243, 9, 3),
+(244, 10, 3),
+(245, 65, 3),
+(246, 77, 3),
+(247, 66, 3),
+(248, 67, 3),
+(249, 69, 3),
+(250, 70, 3),
+(251, 68, 3),
+(252, 71, 3),
+(253, 74, 3),
+(254, 73, 3),
+(255, 72, 3),
+(256, 75, 3),
+(257, 76, 3),
+(258, 22, 3);
 
 -- --------------------------------------------------------
 
@@ -91,9 +109,9 @@ CREATE TABLE `jurusan` (
 --
 
 INSERT INTO `jurusan` (`id_jurusan`, `nama_jurusan`) VALUES
-(1, 'Bisnis Daring Pemasaran'),
-(2, 'Rekayasa Perangkat Lunak'),
-(3, 'Desain Komunikasi Visual');
+(13, 'REKAYASA PERANGKAT LUNAK'),
+(14, 'BISNIS DARING PEMASARAN'),
+(15, 'DESAIN KOMUNIKASI VISUAL');
 
 -- --------------------------------------------------------
 
@@ -111,8 +129,7 @@ CREATE TABLE `kategori` (
 --
 
 INSERT INTO `kategori` (`id_kategori`, `nama_kategori`) VALUES
-(1, 'PTS'),
-(2, 'UKK');
+(4, 'UJI KOMPETENSI');
 
 -- --------------------------------------------------------
 
@@ -131,11 +148,12 @@ CREATE TABLE `kelas` (
 --
 
 INSERT INTO `kelas` (`id_kelas`, `id_jurusan`, `nama_kelas`) VALUES
-(1, 1, 'X BDP 1'),
-(2, 2, 'X RPL 1'),
-(3, 3, 'X DKV 1'),
-(4, 2, 'X RPL 2'),
-(5, 1, 'X BDP 2');
+(21, 13, '12 RPL 1'),
+(22, 13, '12 RPL 2'),
+(23, 13, '12 RPL 3'),
+(24, 14, '12 BDP 1'),
+(25, 14, '12 BDP 2'),
+(26, 15, '12 DKV 1');
 
 -- --------------------------------------------------------
 
@@ -169,17 +187,18 @@ INSERT INTO `menu` (`id_menu`, `nama_menu`, `icon`, `ada_submenu`, `submenu`, `u
 (62, 'Menu Management', 'fa fa-bars', 0, 23, 'menu', 3),
 (64, 'CRUD Generator', 'fas fa-edit', 0, 23, 'crud_generator', 2),
 (65, 'Master', 'fas fa-box', 1, 0, 'master', 3),
-(66, 'Data Jurusan', '', 0, 65, 'jurusan', 1),
-(67, 'Data Kelas', '', 0, 65, 'kelas', 2),
-(68, 'Data Pembayaran', '', 0, 65, 'pembayaran', 4),
-(69, 'Data Siswa', '', 0, 65, 'siswa', 5),
-(70, 'Data Kategori', '', 0, 65, 'kategori', 3),
+(66, 'Data Jurusan', '', 0, 65, 'jurusan', 2),
+(67, 'Data Kelas', '', 0, 65, 'kelas', 3),
+(68, 'Data Pembayaran', '', 0, 65, 'pembayaran', 6),
+(69, 'Data Siswa', '', 0, 65, 'siswa', 4),
+(70, 'Data Kategori', '', 0, 65, 'kategori', 5),
 (71, 'Transaksi', 'fas fa-credit-card', 1, 0, 'transaksi', 4),
 (72, 'Data Transaksi', '', 0, 71, 'transaksi', 3),
 (73, 'Transaksi Baru', '', 0, 71, 'transaksi/create', 2),
 (74, 'Metode Pembayaran', '', 0, 71, 'metode_pembayaran', 1),
 (75, 'Laporan', 'fas fa-book', 1, 0, 'laporan', 5),
-(76, 'Laporan Transaksi', '', 0, 75, 'laporan', 1);
+(76, 'Laporan Transaksi', '', 0, 75, 'laporan', 1),
+(77, 'Data Tahun Ajaran', '', 0, 65, 'tahun_ajaran', 1);
 
 -- --------------------------------------------------------
 
@@ -213,7 +232,7 @@ CREATE TABLE `pembayaran` (
   `id_pembayaran` int(11) NOT NULL,
   `id_kategori` int(11) NOT NULL,
   `id_jurusan` int(11) NOT NULL,
-  `tahun_angkatan` int(11) NOT NULL,
+  `id_tahun_ajaran` int(11) NOT NULL,
   `nominal` int(11) NOT NULL,
   `keterangan` text
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -222,10 +241,8 @@ CREATE TABLE `pembayaran` (
 -- Dumping data for table `pembayaran`
 --
 
-INSERT INTO `pembayaran` (`id_pembayaran`, `id_kategori`, `id_jurusan`, `tahun_angkatan`, `nominal`, `keterangan`) VALUES
-(4, 2, 3, 2020, 50000, ''),
-(5, 2, 2, 2020, 50000, ''),
-(6, 2, 1, 2020, 50000, '');
+INSERT INTO `pembayaran` (`id_pembayaran`, `id_kategori`, `id_jurusan`, `id_tahun_ajaran`, `nominal`, `keterangan`) VALUES
+(1, 4, 13, 7, 150000, '');
 
 -- --------------------------------------------------------
 
@@ -267,7 +284,9 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`id_role`, `nama_role`) VALUES
-(1, 'Admin');
+(1, 'Superadmin'),
+(3, 'Admin'),
+(4, 'Petugas');
 
 -- --------------------------------------------------------
 
@@ -283,27 +302,45 @@ CREATE TABLE `siswa` (
   `nama_siswa` varchar(255) NOT NULL,
   `tgl_lahir` date NOT NULL,
   `jk` enum('L','P') NOT NULL,
-  `tahun_ajaran` int(11) NOT NULL,
+  `id_tahun_ajaran` int(11) NOT NULL,
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `aktif` int(11) NOT NULL
+  `aktif` int(11) NOT NULL,
+  `barcode` varchar(255) NOT NULL,
+  `atas_nama` varchar(255) NOT NULL,
+  `bank` varchar(255) NOT NULL,
+  `no_rekening` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `siswa`
 --
 
-INSERT INTO `siswa` (`id_siswa`, `id_jurusan`, `id_kelas`, `nis`, `nama_siswa`, `tgl_lahir`, `jk`, `tahun_ajaran`, `email`, `password`, `aktif`) VALUES
-(1, 1, 1, 17180009, 'Siti', '2001-12-15', 'P', 2020, NULL, NULL, 0),
-(2, 2, 2, 171810001, 'adiatna', '2001-12-15', 'L', 2020, 'dyatna.id@gmail.com', '$2y$10$JLe2bA/73bWcxQmHqABkgO/GeG6ZBVDA8.bx7pKphtu/dn2VAhN/2', 1),
-(3, 3, 3, 171810005, 'Muhammad Rivaldi', '2021-04-06', 'L', 2020, NULL, NULL, 0),
-(4, 2, 2, 1718100003, 'Dimas Subagja', '2001-12-12', 'L', 2020, NULL, NULL, 0),
-(5, 2, 2, 1718100002, 'M Dicki Alfauzan', '2002-12-15', 'L', 2020, NULL, NULL, 0),
-(6, 2, 2, 171810004, 'Misal Audrie', '2001-12-12', 'L', 2020, NULL, NULL, 0),
-(7, 2, 4, 17181, 'sahrul', '2001-12-12', 'L', 2020, NULL, NULL, 0),
-(8, 2, 4, 1718110000, 'sukmana', '2003-12-15', 'L', 2020, NULL, NULL, 0),
-(9, 3, 3, 1718100020, 'nadaha', '2001-12-15', 'L', 2020, NULL, NULL, 0),
-(10, 1, 5, 171810002, 'Dian', '2001-12-15', 'P', 20202, '', NULL, 0);
+INSERT INTO `siswa` (`id_siswa`, `id_jurusan`, `id_kelas`, `nis`, `nama_siswa`, `tgl_lahir`, `jk`, `id_tahun_ajaran`, `email`, `password`, `aktif`, `barcode`, `atas_nama`, `bank`, `no_rekening`) VALUES
+(1, 13, 21, 111, 'ANNISA AULIA', '2001-01-01', 'P', 7, NULL, '$2y$10$wa0qriUgU390238FatQdCuqWDQca9Aahx.RDL9Sb/YHjUqSebbKqK', 0, '111', '', '', ''),
+(2, 13, 22, 222, 'WIGA ADITIA', '2001-01-01', 'L', 7, NULL, '$2y$10$ngWOKOLXmF2PCk2c9076c.Mtb1euLwhdXaIYFJIKN72xePwpaKhaC', 0, '222', '', '', ''),
+(3, 13, 23, 333, 'ADIATNA SUKMANA', '2001-01-01', 'L', 7, 'dyatna.id@gmail.com', '$2y$10$HulCVJX1t5ecTFOUypyu/u7VY5fTToI76zMjyDCCXOOhTKF5Br/hC', 1, '333', 'Adiatna Sukmana', 'BRI', '1718100009'),
+(4, 14, 24, 444, 'SITI MULYANI', '2001-01-01', 'P', 7, NULL, '$2y$10$MO6BUC6GZAj2UB2cC4KdQOg6Kw7CLlIZEPszgktdGMUyl1QHEErxm', 0, '444', '', '', ''),
+(5, 14, 25, 555, 'DIDAN ABDILAH', '2001-01-01', 'L', 7, NULL, '$2y$10$7HTy1aUT0h9q1CXnMh2OKOOheX3DpCmeVmQ4o9fUaB0rFO.oZP3da', 0, '555', '', '', ''),
+(6, 15, 26, 666, 'NADHA RAMADHAN', '2001-01-01', 'L', 7, NULL, '$2y$10$qEEG2kbpWTopKOyPTyn1vuGu5BRZNA7AmrN9QTS3XldbF5HEU8pIi', 0, '666', '', '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tahun_ajaran`
+--
+
+CREATE TABLE `tahun_ajaran` (
+  `id_tahun_ajaran` int(11) NOT NULL,
+  `tahun_ajaran` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tahun_ajaran`
+--
+
+INSERT INTO `tahun_ajaran` (`id_tahun_ajaran`, `tahun_ajaran`) VALUES
+(7, 2020);
 
 -- --------------------------------------------------------
 
@@ -323,11 +360,9 @@ CREATE TABLE `token_siswa` (
 --
 
 INSERT INTO `token_siswa` (`id`, `id_siswa`, `tgl`, `token`) VALUES
-(1, 2, '2021-04-09 08:55:41', 'T72ZQETF4PIY9DUUCKNJDZLGED06KRKU'),
-(2, 2, '2021-04-09 08:56:37', 'O14SH9XGQNR2PC2CB2P5XJCAN09DQPT7'),
-(3, 2, '2021-04-09 09:01:21', 'XO4RXFA6F9BRCQEKQILVZHD6EOPE1IQE'),
-(4, 2, '2021-04-09 09:03:29', 'DYS48PLJVNTPFZ245AERFEE1U8U3WFVL'),
-(5, 2, '2021-04-09 09:19:38', '00O9JHC23Z49IM9L2B9TF4EKC4ZDUWZQ');
+(11, 3, '2021-04-30 21:58:14', 'DCQE7V5EODA2VZIEKC1PHO7SSMW7EKES'),
+(12, 3, '2021-04-30 21:58:30', 'G59FQAT5BGY45216B5HVZCZ7H5H8RJD9'),
+(13, 3, '2021-04-30 22:01:08', 'HMBMV9T88AP4QPLA6DQ4AYVYAZEWR1GV');
 
 -- --------------------------------------------------------
 
@@ -366,12 +401,7 @@ CREATE TABLE `transaksi` (
 --
 
 INSERT INTO `transaksi` (`id_transaksi`, `no_faktur`, `id_pembayaran`, `nis`, `tgl`, `tahun_dibayar`, `jumlah_dibayar`, `status`, `bukti_pembayaran`, `keterangan`) VALUES
-(7, 'FK-0704210001', 6, 17180009, '2021-04-07 13:22:49', 2021, 50000, 'diterima', NULL, NULL),
-(9, 'FK-0704210003', 4, 171810005, '2021-04-07 13:23:33', 2021, 50000, 'diterima', NULL, NULL),
-(10, 'FK-0704210004', 5, 1718100002, '2021-04-07 13:23:46', 2021, 50000, 'diterima', NULL, NULL),
-(11, 'FK-0704210005', 5, 171810004, '2021-04-07 13:32:35', 2021, 25000, 'diterima', NULL, NULL),
-(12, 'FK-0704210006', 5, 171810004, '2021-04-07 14:48:55', 2021, 25000, 'diterima', NULL, NULL),
-(13, 'FK-0904210001', 5, 171810001, '2021-04-09 11:18:37', 2021, 50000, 'diterima', 'cc35c5c65d3aeecbe882204ee43c8d80.jpeg', '');
+(1, 'FK-0105210001', 1, 333, '2021-04-30 22:13:55', 2021, 150000, 'diterima', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -381,6 +411,7 @@ INSERT INTO `transaksi` (`id_transaksi`, `no_faktur`, `id_pembayaran`, `nis`, `t
 
 CREATE TABLE `user` (
   `id_user` char(10) NOT NULL,
+  `id_jurusan` int(11) NOT NULL,
   `nama_user` varchar(128) NOT NULL,
   `alamat` varchar(128) NOT NULL,
   `jk` enum('L','P') NOT NULL,
@@ -388,16 +419,18 @@ CREATE TABLE `user` (
   `email` varchar(30) NOT NULL,
   `password` varchar(128) NOT NULL,
   `gambar` varchar(128) NOT NULL,
-  `id_role` int(11) NOT NULL
+  `id_role` int(11) NOT NULL,
+  `petugas` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id_user`, `nama_user`, `alamat`, `jk`, `telepon`, `email`, `password`, `gambar`, `id_role`) VALUES
-('', 'SUPERADMIN', 'BANDUNG', 'L', '083822623170', 'superadmin@admin.com', '$2y$10$t2LIGNkyTgoo.wfFq65HU.RMH3.maKSCVMYL1.ix0l.xZjAOfi1PK', 'man.png', 1),
-('PTS00001', 'Administrator', 'Batulawang', 'L', '085864273756', 'admin@admin.com', '$2y$10$t2LIGNkyTgoo.wfFq65HU.RMH3.maKSCVMYL1.ix0l.xZjAOfi1PK', 'man-1.png', 1);
+INSERT INTO `user` (`id_user`, `id_jurusan`, `nama_user`, `alamat`, `jk`, `telepon`, `email`, `password`, `gambar`, `id_role`, `petugas`) VALUES
+('', 0, 'SUPERADMIN', 'BANDUNG', 'L', '083822623170', 'superadmin@admin.com', '$2y$10$t2LIGNkyTgoo.wfFq65HU.RMH3.maKSCVMYL1.ix0l.xZjAOfi1PK', 'man.png', 1, 0),
+('PTS00001', 0, 'Administrator', 'Batulawang', 'L', '085864273756', 'superadmin@superadmin.com', '$2y$10$SRP/yG.Ld65tUXzNhV5q7O4UPCahMU5I./RV5NsI4VYS1iTncAmBm', 'man-1.png', 1, 0),
+('PTS00002', 0, 'Admin', 'Bandung', 'L', '083822623170', 'admin@admin.com', '$2y$10$EBqRO8Q7ZljT9.bI/rdK..42lrYn5PA1pc3wG.hQem3jXEbQ.h4Ve', 'd7128161dc2c2bb320ce892df4983d6b.png', 3, 0);
 
 --
 -- Indexes for dumped tables
@@ -470,6 +503,12 @@ ALTER TABLE `siswa`
   ADD PRIMARY KEY (`id_siswa`);
 
 --
+-- Indexes for table `tahun_ajaran`
+--
+ALTER TABLE `tahun_ajaran`
+  ADD PRIMARY KEY (`id_tahun_ajaran`);
+
+--
 -- Indexes for table `token_siswa`
 --
 ALTER TABLE `token_siswa`
@@ -501,7 +540,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `akses_role`
 --
 ALTER TABLE `akses_role`
-  MODIFY `akses_role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=241;
+  MODIFY `akses_role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=259;
 
 --
 -- AUTO_INCREMENT for table `backup`
@@ -513,25 +552,25 @@ ALTER TABLE `backup`
 -- AUTO_INCREMENT for table `jurusan`
 --
 ALTER TABLE `jurusan`
-  MODIFY `id_jurusan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_jurusan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `kategori`
 --
 ALTER TABLE `kategori`
-  MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `kelas`
 --
 ALTER TABLE `kelas`
-  MODIFY `id_kelas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_kelas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT for table `metode_pembayaran`
@@ -543,7 +582,7 @@ ALTER TABLE `metode_pembayaran`
 -- AUTO_INCREMENT for table `pembayaran`
 --
 ALTER TABLE `pembayaran`
-  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `pengaturan`
@@ -555,31 +594,37 @@ ALTER TABLE `pengaturan`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id_role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `siswa`
 --
 ALTER TABLE `siswa`
-  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `tahun_ajaran`
+--
+ALTER TABLE `tahun_ajaran`
+  MODIFY `id_tahun_ajaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `token_siswa`
 --
 ALTER TABLE `token_siswa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `token_user`
 --
 ALTER TABLE `token_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

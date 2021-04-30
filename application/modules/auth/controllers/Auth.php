@@ -79,21 +79,21 @@ class Auth extends CI_Controller {
 	{
 		$valid = $this->form_validation;
 
-		$valid->set_rules('email', 'email', 'required');
+		$valid->set_rules('nis', 'nis', 'required');
 		$valid->set_rules('password', 'password', 'required');
 		$valid->set_message('required', 'Kolom wajib diisi');
 
 		if ($valid->run()) {
 			$post = $this->input->post();
 
-			$siswa = $this->db->get_where('siswa', ['email' => $post['email']])->row_array();
+			$siswa = $this->db->get_where('siswa', ['nis' => $post['nis']])->row_array();
 
 			if ($siswa) {
 
-				if ($siswa['aktif'] == 0) {
-					$this->session->set_flashdata('error', 'Akun anda belum diaktifkan');
-					redirect('login_siswa','refresh');
-				}
+				// if ($siswa['aktif'] == 0) {
+				// 	$this->session->set_flashdata('error', 'Akun anda belum diaktifkan');
+				// 	redirect('login_siswa','refresh');
+				// }
 
 				if (password_verify($post['password'], $siswa['password'])) {
 
@@ -107,6 +107,10 @@ class Auth extends CI_Controller {
 					];
 
 					$this->session->set_userdata($session);
+
+					if ($siswa['aktif'] == 0) {
+						redirect('auth/verifikasi_email','refresh');
+					}
 
 					redirect('dashboard/siswa','refresh');
 					
@@ -122,6 +126,39 @@ class Auth extends CI_Controller {
 		}
 
 		$this->load->view('auth/login_siswa');
+	}
+
+	public function verifikasi_email()
+	{
+		$this->form_validation->set_rules('email', 'email', 'required');
+		$this->form_validation->set_rules('pw1', 'password baru', 'required|matches[pw2]');
+		$this->form_validation->set_rules('pw2', 'konfirmasi password baru', 'required|matches[pw1]');
+
+		if ($this->form_validation->run()) {
+			$token = acak(32);
+			$post = $this->input->post();
+
+			$siswa = $this->db->get_where('siswa', ['id_siswa' => $this->session->userdata('id_siswa')])->row_array();
+
+			$token_siswa = [
+				'id_siswa' => $siswa['id_siswa'],
+				'token' => $token
+			];
+
+			$this->db->insert('token_siswa', $token_siswa);
+
+			$this->db->set('email', $post['email']);
+			$this->db->set('password', password_hash($post['pw1'], PASSWORD_DEFAULT));
+			$this->db->where('id_siswa', $siswa['id_siswa']);
+			$this->db->update('siswa');
+
+			$this->_send_email_siswa($token, $post['email']);
+
+			$this->session->set_flashdata('message', 'Periksa email anda untuk aktivasi akun, bila tidak terdapat email periksa folder SPAM');
+			redirect('login_siswa','refresh');
+		}else{
+			$this->load->view('auth/verifikasi_email');
+		}
 	}
 
 	public function daftar_siswa()

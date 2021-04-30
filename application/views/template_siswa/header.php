@@ -1,4 +1,4 @@
-<?php $siswa = $this->db->get_where('siswa', ['id_siswa' => $this->session->userdata('id_siswa')])->row_array(); ?>
+<?php $siswa = $this->db->get_where('siswa', ['nis' => $this->session->userdata('nis')])->row_array(); ?>
 <!DOCTYPE html>
 <html>
 <head>

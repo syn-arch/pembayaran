@@ -36,7 +36,7 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <p>0. Silahkan isi informasi pengirim terlebih dahulu pada link <a target="_blank" href="<?php echo base_url('transaksi/tambah_rek') ?>" class="btn btn-primary">BERIKUT</a> <br> Jika sudah terisi lanjut ke langkah berikutnya</p>
+                        <p>0. Pastikan informasi pengirim sudah terisi, anda dapat mengubahnya melalui link <a target="_blank" href="<?php echo base_url('transaksi/tambah_rek') ?>" >BERIKUT</a> <br> Jika sudah terisi lanjut ke langkah berikutnya</p>
                         <p>1. Untuk melakukan transaksi non tunai, anda dapat mentransfer pembayaran ke rekening dibawah *(<small>pilih salah satu</small>)
                         Sebesar <?= "Rp. " . number_format($pembayaran->nominal)  ?></P>
                         <div class="table-responsive">

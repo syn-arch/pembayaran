@@ -3,6 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller {
 
+	 function __construct()
+    {
+        parent::__construct();
+        $this->load->model('siswa/siswa_model');
+        $this->load->library('form_validation');        
+        $this->load->library('datatables');
+    }
+
 	public function index()
 	{
 		cek_login();
@@ -17,6 +25,7 @@ class Dashboard extends CI_Controller {
 	public function siswa()
 	{	
 		$data['judul'] = "Dashboard";
+		$data['siswa'] = $this->siswa_model->get_by_id($this->session->userdata('id_siswa'));
 
 		$this->load->view('template_siswa/header', $data, FALSE);
 		$this->load->view('dashboard_siswa', $data, FALSE);

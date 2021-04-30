@@ -146,14 +146,14 @@ class Jurusan extends CI_Controller
 
     public function _rules() 
     {
-       $this->form_validation->set_rules('nama_jurusan', 'nama jurusan', 'trim|required');
+     $this->form_validation->set_rules('nama_jurusan', 'nama jurusan', 'trim|required');
 
-       $this->form_validation->set_rules('id_jurusan', 'id_jurusan', 'trim');
-       $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
-   }
+     $this->form_validation->set_rules('id_jurusan', 'id_jurusan', 'trim');
+     $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+ }
 
-   public function excel()
-   {
+ public function excel()
+ {
     $this->load->helper('exportexcel');
     $namaFile = "jurusan.xls";
     $judul = "jurusan";
