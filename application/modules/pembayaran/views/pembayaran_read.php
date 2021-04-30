@@ -21,7 +21,7 @@
                    <table class="table">
                     <tr><td>Kategori</td><td><?php echo $nama_kategori; ?></td></tr>
                     <tr><td>Jurusan</td><td><?php echo $nama_jurusan; ?></td></tr>
-                    <tr><td>Tahun Angkatan</td><td><?php echo $tahun_angkatan; ?></td></tr>
+                    <tr><td>Tahun Ajaran</td><td><?php echo $tahun_ajaran; ?></td></tr>
                     <tr><td>Nominal</td><td><?php echo "Rp. " . number_format($nominal); ?></td></tr>
                     <tr><td>Keterangan</td><td><?php echo $keterangan; ?></td></tr>
                 </table>

@@ -17,6 +17,7 @@ class Siswa extends CI_Controller
         $this->load->model('Siswa_model');
         $this->load->model('kelas/kelas_model');
         $this->load->model('jurusan/jurusan_model');
+        $this->load->model('tahun_ajaran/tahun_ajaran_model');
         $this->load->library('form_validation');        
         $this->load->library('datatables');
     }
@@ -105,7 +106,7 @@ class Siswa extends CI_Controller
             'nama_siswa' => set_value('nama_siswa'),
             'tgl_lahir' => set_value('tgl_lahir'),
             'jk' => set_value('jk'),
-            'tahun_ajaran' => set_value('tahun_ajaran'),
+            'id_tahun_ajaran' => set_value('id_tahun_ajaran'),
             'email' => set_value('email'),
             'aktif' => set_value('aktif'),
         );
@@ -113,6 +114,7 @@ class Siswa extends CI_Controller
         $data['judul'] = 'Tambah Siswa';
         $data['kelas'] = $this->kelas_model->get_all();
         $data['jurusan'] = $this->jurusan_model->get_all();
+        $data['tahun_ajaran'] = $this->tahun_ajaran_model->get_all();
 
         $this->load->view('templates/header', $data);
         $this->load->view('siswa/siswa_form', $data);
@@ -134,7 +136,7 @@ class Siswa extends CI_Controller
               'nama_siswa' => $this->input->post('nama_siswa',TRUE),
               'tgl_lahir' => $this->input->post('tgl_lahir',TRUE),
               'jk' => $this->input->post('jk',TRUE),
-              'tahun_ajaran' => $this->input->post('tahun_ajaran',TRUE),
+              'id_tahun_ajaran' => $this->input->post('id_tahun_ajaran',TRUE),
               'email' => $this->input->post('email',TRUE),
               'password' => password_hash($this->input->post('password',TRUE), PASSWORD_DEFAULT),
               'aktif' => $this->input->post('aktif',TRUE)
@@ -162,7 +164,7 @@ class Siswa extends CI_Controller
                 'nama_siswa' => set_value('nama_siswa', $row->nama_siswa),
                 'tgl_lahir' => set_value('tgl_lahir', $row->tgl_lahir),
                 'jk' => set_value('jk', $row->jk),
-                'tahun_ajaran' => set_value('tahun_ajaran', $row->tahun_ajaran),
+                'id_tahun_ajaran' => set_value('id_tahun_ajaran', $row->id_tahun_ajaran),
                 'email' => set_value('email', $row->email),
                 'aktif' => set_value('aktif', $row->aktif),
             );
@@ -170,6 +172,7 @@ class Siswa extends CI_Controller
             $data['judul'] = 'Ubah Siswa';
             $data['kelas'] = $this->kelas_model->get_all();
             $data['jurusan'] = $this->jurusan_model->get_all();
+            $data['tahun_ajaran'] = $this->tahun_ajaran_model->get_all();
 
             $this->load->view('templates/header', $data);
             $this->load->view('siswa/siswa_form', $data);
@@ -197,7 +200,7 @@ class Siswa extends CI_Controller
                 'nama_siswa' => $this->input->post('nama_siswa',TRUE),
                 'tgl_lahir' => $this->input->post('tgl_lahir',TRUE),
                 'jk' => $this->input->post('jk',TRUE),
-                'tahun_ajaran' => $this->input->post('tahun_ajaran',TRUE),
+                'id_tahun_ajaran' => $this->input->post('id_tahun_ajaran',TRUE),
                 'email' => $this->input->post('email',TRUE),
                 'aktif' => $this->input->post('aktif',TRUE),
             );
@@ -214,6 +217,13 @@ class Siswa extends CI_Controller
 
     public function delete($id) 
     {
+        $nis = $this->db->get_where('siswa', ['id_siswa'])->row()->nis;
+
+        if ($this->db->get_where('transaksi', ['nis' => $nis])->row_array()) {
+            $this->session->set_flashdata('error', 'Masih terdapat data turunan yang berhubungan');
+            redirect(site_url('siswa'));
+        }
+
         $row = $this->Siswa_model->get_by_id($id);
 
         if ($row) {
@@ -234,7 +244,7 @@ class Siswa extends CI_Controller
         $this->form_validation->set_rules('nama_siswa', 'nama siswa', 'trim|required');
         $this->form_validation->set_rules('tgl_lahir', 'tgl lahir', 'trim|required');
         $this->form_validation->set_rules('jk', 'jk', 'trim|required');
-        $this->form_validation->set_rules('tahun_ajaran', 'tahun ajaran', 'trim|required|numeric');
+        $this->form_validation->set_rules('id_tahun_ajaran', 'tahun ajaran', 'trim|required|numeric');
 
         $this->form_validation->set_rules('id_siswa', 'id_siswa', 'trim');
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
@@ -314,8 +324,8 @@ class Siswa extends CI_Controller
         ->setCellValue('B1', 'Kelas')
         ->setCellValue('C1', 'NIS')
         ->setCellValue('D1', 'Nama Siswa')
-        ->setCellValue('E1', 'Tanggal Lahir (DDD-MM-YY)')
-        ->setCellValue('F1', 'Jk')
+        ->setCellValue('E1', 'Tanggal Lahir (YYYY-MM-DD)')
+        ->setCellValue('F1', 'Jk (L/P)')
         ->setCellValue('G1', 'Tahun Ajaran')
         ->setCellValue('H1', 'Barcode')
         ;                      
@@ -347,6 +357,7 @@ class Siswa extends CI_Controller
         {
             $nama_jurusan = $sheetData[$i]['0'];
             $nama_kelas = $sheetData[$i]['1'];
+            $nama_tahun_ajaran = $sheetData[$i]['6'];
 
             $jurusan = $this->db->get_where('jurusan', ['nama_jurusan' => $nama_jurusan])->row_array();
             if ($jurusan) {
@@ -363,10 +374,21 @@ class Siswa extends CI_Controller
                 $id_kelas = $kelas['id_kelas'];
             }else{
                 $this->db->insert('kelas', [
-                   'nama_kelas' => $nama_kelas,
-                   'id_jurusan' => $id_jurusan
-               ]);
+                 'nama_kelas' => $nama_kelas,
+                 'id_jurusan' => $id_jurusan
+             ]);
                 $id_kelas = $this->db->insert_id();
+            }
+
+            $tahun_ajaran = $this->db->get_where('tahun_ajaran', ['tahun_ajaran' => $nama_tahun_ajaran])->row_array();
+
+            if ($tahun_ajaran) {
+                $id_tahun_ajaran = $tahun_ajaran['id_tahun_ajaran'];
+            }else{
+                $this->db->insert('tahun_ajaran', [
+                 'tahun_ajaran' => $nama_tahun_ajaran,
+             ]);
+                $id_tahun_ajaran = $this->db->insert_id();
             }
 
             if ($sheetData[$i]['0'] != '') {
@@ -375,10 +397,11 @@ class Siswa extends CI_Controller
                     'id_kelas' => $id_kelas,
                     'nis' => $sheetData[$i]['2'],
                     'nama_siswa' => $sheetData[$i]['3'],
-                    'tgl_lahir' => $sheetData[$i]['4'],
+                    'tgl_lahir' => str_replace('/', '-', $sheetData[$i]['4']),
                     'jk' => $sheetData[$i]['5'],
-                    'tahun_ajaran' => $sheetData[$i]['6'],
-                    'barcode' => $sheetData[$i]['7']
+                    'id_tahun_ajaran' => $id_tahun_ajaran,
+                    'barcode' => $sheetData[$i]['7'],
+                    'password' => password_hash($sheetData[$i]['2'], PASSWORD_DEFAULT)
                 ];
 
                 $this->db->insert('siswa', $data);

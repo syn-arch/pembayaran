@@ -22,7 +22,7 @@
             <th>No</th>
             <th>Kategori</th>
             <th>Jurusan</th>
-            <th>Tahun Angkatan</th>
+            <th>Tahun Ajaran</th>
             <th>Nominal</th>
             <th>Keterangan</th>
 
@@ -34,7 +34,7 @@
                     <td><?php echo ++$start ?></td>
                     <td><?php echo $pembayaran->nama_kategori ?></td>
                     <td><?php echo $pembayaran->nama_jurusan ?></td>
-                    <td><?php echo $pembayaran->tahun_angkatan ?></td>
+                    <td><?php echo $pembayaran->tahun_ajaran ?></td>
                     <td><?php echo $pembayaran->nominal ?></td>
                     <td><?php echo $pembayaran->keterangan ?></td>	
                 </tr>

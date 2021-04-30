@@ -74,7 +74,7 @@
                                     <td><input required="" type="text" class="form-control cash" name="jumlah_dibayar" id="cash" placeholder="Cash" value="" autofocus="" autocomplete="off" /></td>
                                 </tr>
                                 <tr>
-                                    <th>Kembalian</th>
+                                    <th>Sisa Bayar</th>
                                     <td><input readonly="" type="text" class="form-control kembalian" name="kembalian" id="kembalian" placeholder="Kembalian" value="" autofocus="" autocomplete="off" /></td>
                                 </tr>
                                 <tr>
@@ -156,7 +156,7 @@
                       title : "Error",
                       text : "Siswa Tidak Ditemukan",
                       icon : "error"
-                    })
+                  })
                     $('.barcode').val('')
                     $('.barcode').focus()
                     return
@@ -172,11 +172,15 @@
                 const data = JSON.parse(res)
 
                 if (data.length < 1) {
+                    $('.nama_kelas').val('')
+                    $('.nama_siswa').val('')
+                    $('.nis').val('')
+                    $('.list-pembayaran').html('')
                     $('.list-pembayaran').append(`
                         <tr>
-                            <td colspan="4" class="text-center">Data Pembayaran Tidak Ditemukan</td>
+                        <td colspan="4" class="text-center">Data Pembayaran Tidak Ditemukan</td>
                         </tr>
-                    `);
+                        `);
                     return
                 }
 
@@ -185,14 +189,14 @@
                     $('.list-pembayaran').html('')
                     $('.list-pembayaran').append(`
                         <tr>
-                            <td>${num++}</td>
-                            <td>${row.nama_kategori}</td>
-                            <td>${rupiah(row.nominal, 'Rp')}</td>
-                            <td>
-                                <a class="btn btn-primary btn-tambah" data-id="${row.id_pembayaran}"><i class="fas fa-plus"></i></a>
-                            </td>
+                        <td>${num++}</td>
+                        <td>${row.nama_kategori}</td>
+                        <td>${rupiah(row.nominal, 'Rp')}</td>
+                        <td>
+                        <a class="btn btn-primary btn-tambah" data-id="${row.id_pembayaran}"><i class="fas fa-plus"></i></a>
+                        </td>
                         </tr>
-                    `);
+                        `);
                 })
             });
 
@@ -209,31 +213,31 @@
               title : "Error",
               text : "Pembayaran Telah Ditambahkan",
               icon : "error"
-            })
+          })
             return
         }
 
         $.get(`${base_url}pembayaran/get_by_id/${id}`, function(res){
-                const data = JSON.parse(res)
-                let num = 1;
-                $('.pembayaran-item').append(`
-                    <tr>
-                        <input type="hidden" name="id_pembayaran" value="${data.id_pembayaran}">
-                        <td>${num++}</td>
-                        <td>${data.nama_kategori}</td>
-                        <td>${rupiah(data.nominal, 'Rp')}</td>
-                        <td>
-                            <a class="btn btn-danger btn-hapus"><i class="fas fa-trash"></i></a>
-                        </td>
-                    </tr>
+            const data = JSON.parse(res)
+            let num = 1;
+            $('.pembayaran-item').append(`
+                <tr>
+                <input type="hidden" name="id_pembayaran" value="${data.id_pembayaran}">
+                <td>${num++}</td>
+                <td>${data.nama_kategori}</td>
+                <td>${rupiah(data.nominal, 'Rp')}</td>
+                <td>
+                <a class="btn btn-danger btn-hapus"><i class="fas fa-trash"></i></a>
+                </td>
+                </tr>
                 `);
-                $('.total').val(data.nominal)
+            $('.total').val(data.nominal)
 
-                const nis = $('.nis').val()
+            const nis = $('.nis').val()
 
-                $.get(`${base_url}transaksi/get_telah_dibayar/${nis}/${id}`, function(res){
-                    $('.telah_dibayar').val(parseInt(res))
-                });
+            $.get(`${base_url}transaksi/get_telah_dibayar/${nis}/${id}`, function(res){
+                $('.telah_dibayar').val(parseInt(res) || 0)
+            });
         });
     });
 

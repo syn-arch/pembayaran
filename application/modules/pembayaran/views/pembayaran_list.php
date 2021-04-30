@@ -25,7 +25,7 @@
                             <th>No</th>
                             <th>Kategori</th>
                             <th>Jurusan</th>
-                            <th>Tahun Angkatan</th>
+                            <th>Tahun Ajaran</th>
                             <th>Nominal</th>
                             <th>Keterangan</th>
                             <th>Action</th>
@@ -77,7 +77,7 @@
             },
             {"data": "nama_kategori"},
             {"data": "nama_jurusan"},
-            {"data": "tahun_angkatan"},
+            {"data": "tahun_ajaran"},
             {
                 "data": "nominal",
                 render: $.fn.dataTable.render.number('.', '.', 0, '')

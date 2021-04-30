@@ -66,10 +66,15 @@
                                 </select>
                                 <?php echo form_error('jk', '<small style="color:red">','</small>') ?>
                             </div>
-                            <div class="form-group <?php if(form_error('tahun_ajaran')) echo 'has-error'?> ">
+                             <div class="form-group <?php if(form_error('id_tahun_ajaran')) echo 'has-error'?> ">
                                 <label for="int">Tahun Ajaran</label>
-                                <input type="text" class="form-control" name="tahun_ajaran" id="tahun_ajaran" placeholder="Tahun Ajaran" value="<?php echo $tahun_ajaran; ?>" />
-                                <?php echo form_error('tahun_ajaran', '<small style="color:red">','</small>') ?>
+                                <select name="id_tahun_ajaran" id="id_tahun_ajaran" class="form-control">
+                                    <option value="">-- Pilih Tahun Ajaran --</option>
+                                    <?php foreach ($tahun_ajaran as $row): ?>
+                                        <option <?php echo $id_tahun_ajaran == $row->id_tahun_ajaran ? 'selected': ''  ?> value="<?php echo $row->id_tahun_ajaran ?>"><?php echo $row->tahun_ajaran ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                                <?php echo form_error('id_tahun_ajaran', '<small style="color:red">','</small>') ?>
                             </div>
                             <div class="form-group <?php if(form_error('email')) echo 'has-error'?> ">
                                 <label for="int">Email</label>

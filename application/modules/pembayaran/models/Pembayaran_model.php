@@ -17,11 +17,12 @@ class Pembayaran_model extends CI_Model
 
     // datatables
     function json() {
-        $this->datatables->select('id_pembayaran,nama_jurusan,nama_kategori,tahun_angkatan,nominal,keterangan');
+        $this->datatables->select('id_pembayaran,nama_jurusan,nama_kategori,tahun_ajaran,nominal,keterangan');
         $this->datatables->from('pembayaran');
         //add this line for join
-        $this->datatables->join('kategori', 'id_kategori');
-        $this->datatables->join('jurusan', 'id_jurusan');
+        $this->datatables->join('kategori', 'id_kategori', 'left');
+        $this->datatables->join('jurusan', 'id_jurusan', 'left');
+        $this->datatables->join('tahun_ajaran', 'id_tahun_ajaran', 'left');
         $this->datatables->add_column('action', 
             '<a href="'  . site_url('pembayaran/read/$1') . '" class="btn btn-info"><i class="fa fa-eye"></i></a> 
             <a href="'  . site_url('pembayaran/update/$1') . '" class="btn btn-warning"><i class="fa fa-edit"></i></a> 
@@ -34,16 +35,18 @@ class Pembayaran_model extends CI_Model
         $siswa = $this->db->get_where('siswa', ['nis' => $nis])->row_array();
 
         $this->db->join('kategori', 'id_kategori');
-        $this->db->where('tahun_angkatan', $siswa['tahun_ajaran']);
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran');
+        $this->db->where('id_tahun_ajaran', $siswa['id_tahun_ajaran']);
         $this->db->where('id_jurusan', $siswa['id_jurusan']);
         return $this->db->get('pembayaran')->result();
     }
 
-    public function get_pembayaran($id_kategori, $tahun_angkatan)
+    public function get_pembayaran($id_kategori, $tahun_ajaran)
     {
-        $this->db->join('kategori', 'id_kategori');
-        $this->db->join('jurusan', 'id_jurusan');
-        $this->db->where('tahun_angkatan', $tahun_angkatan);
+        $this->db->join('kategori', 'id_kategori', 'left');
+        $this->db->join('jurusan', 'id_jurusan', 'left');
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran', 'left');
+        $this->db->where('id_tahun_ajaran', $tahun_ajaran);
         $this->db->where('id_kategori', $id_kategori);
         return $this->db->get('pembayaran')->result();
     }
@@ -51,8 +54,9 @@ class Pembayaran_model extends CI_Model
     // get all
     function get_all()
     {
-        $this->db->join('kategori', 'id_kategori');
-        $this->db->join('jurusan', 'id_jurusan');
+        $this->db->join('kategori', 'id_kategori', 'left');
+        $this->db->join('jurusan', 'id_jurusan', 'left');
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran', 'left');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }
@@ -60,8 +64,9 @@ class Pembayaran_model extends CI_Model
     // get data by id
     function get_by_id($id)
     {
-        $this->db->join('kategori', 'id_kategori');
-        $this->db->join('jurusan', 'id_jurusan');
+        $this->db->join('kategori', 'id_kategori', 'left');
+        $this->db->join('jurusan', 'id_jurusan', 'left');
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran', 'left');
         $this->db->where($this->id, $id);
         return $this->db->get($this->table)->row();
     }
@@ -71,10 +76,11 @@ class Pembayaran_model extends CI_Model
         $this->db->like('id_pembayaran', $q);
         $this->db->or_like('id_kategori', $q);
         $this->db->or_like('id_jurusan', $q);
-        $this->db->or_like('tahun_angkatan', $q);
+        $this->db->or_like('tahun_ajaran', $q);
         $this->db->or_like('nominal', $q);
         $this->db->or_like('keterangan', $q);
         $this->db->from($this->table);
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran');
         return $this->db->count_all_results();
     }
 
@@ -84,10 +90,11 @@ class Pembayaran_model extends CI_Model
         $this->db->like('id_pembayaran', $q);
         $this->db->or_like('id_kategori', $q);
         $this->db->or_like('id_jurusan', $q);
-        $this->db->or_like('tahun_angkatan', $q);
+        $this->db->or_like('tahun_ajaran', $q);
         $this->db->or_like('nominal', $q);
         $this->db->or_like('keterangan', $q);
         $this->db->limit($limit, $start);
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran');
         return $this->db->get($this->table)->result();
     }
 

@@ -18,7 +18,7 @@
                                     <select name="id_pembayaran" id="id_pembayaran" class="form-control select2">
                                         <option value="">Pilh Kategori</option>
                                         <?php foreach ($kategori as $row): ?>
-                                            <option value="<?php echo $row->id_pembayaran ?>"><?= $row->nama_kategori ?> | <?= $row->nama_jurusan ?> | <?= $row->tahun_angkatan ?></option>  
+                                            <option value="<?php echo $row->id_pembayaran ?>"><?= $row->nama_kategori ?> | <?= $row->nama_jurusan ?> | <?= $row->tahun_ajaran ?></option>  
                                         <?php endforeach ?>
                                     </select>
                                 </div>
@@ -100,7 +100,7 @@
                                             </tr>
                                             <tr>
                                                 <th>Tahun Ajaran</th>
-                                                <td><?= $pembayaran->tahun_angkatan ?></td>
+                                                <td><?= $pembayaran->tahun_ajaran ?></td>
                                             </tr>
                                             <tr>
                                                 <th>Nominal</th>
@@ -132,27 +132,30 @@
                                                         <td><?= $row['nis'] ?></td>
                                                         <td><?= $row['jk'] ?></td>
                                                         <td><?= "Rp. " . number_format($row['jumlah_dibayar']) ?></td>
-
-                                                        <?php if ($row['nominal'] == 0): ?>
-                                                            <td><?= "Rp. " . number_format($pembayaran->nominal) ?></td>
-                                                            <td><button class="btn btn-danger">BELUM BAYAR</button></td>
-                                                            <?php else: ?>
-                                                                <td><?= "Rp. " . number_format($row['sisa_bayar']) ?></td>
-                                                                <td><?= $row['jumlah_dibayar']  >= $pembayaran->nominal ? '<button class="btn btn-success">LUNAS</button>' : '<button class="btn btn-warning">BELUM LUNAS</button>' ?></td>
-                                                            <?php endif ?>
-
-                                                        </tr>
-                                                    <?php endforeach ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                        <td><?= "Rp. " . number_format($row['sisa_bayar']) ?></td>
+                                                        <td>
+                                                            <?php 
+                                                            if ($row['jumlah_dibayar'] == 0) {
+                                                                echo '<button class="btn btn-danger">BELUM BAYAR</button>';
+                                                            }else if($row['jumlah_dibayar'] < $row['nominal']){
+                                                                echo '<button class="btn btn-warning">BELUM LUNAS</button>';
+                                                            }else{
+                                                                echo '<button class="btn btn-success">LUNAS</button>';
+                                                            }
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach ?>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            <?php endif ?>
-
+            </div>
         <?php endif ?>
+
+    <?php endif ?>
 

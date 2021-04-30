@@ -18,7 +18,7 @@
                                     <select name="id_pembayaran" id="id_pembayaran" class="form-control select2">
                                         <option value="">Pilh Kategori</option>
                                         <?php foreach ($kategori as $row): ?>
-                                            <option value="<?php echo $row->id_pembayaran ?>"><?= $row->nama_kategori ?> | <?= $row->nama_jurusan ?> | <?= $row->tahun_angkatan ?></option>  
+                                            <option value="<?php echo $row->id_pembayaran ?>"><?= $row->nama_kategori ?> | <?= $row->nama_jurusan ?> | <?= $row->tahun_ajaran ?></option>  
                                         <?php endforeach ?>
                                     </select>
                                 </div>
@@ -61,7 +61,7 @@
                                     </tr>
                                     <tr>
                                         <th>Tahun Ajaran</th>
-                                        <td><?= $pembayaran->tahun_angkatan ?></td>
+                                        <td><?= $pembayaran->tahun_ajaran ?></td>
                                     </tr>
                                     <tr>
                                         <th>Nominal</th>

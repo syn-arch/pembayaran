@@ -12,6 +12,7 @@ class laporan extends CI_Controller
         $this->load->model('kelas/kelas_model');
         $this->load->model('jurusan/jurusan_model');
         $this->load->model('kategori/kategori_model');
+        $this->load->model('tahun_ajaran/tahun_ajaran_model');
         $this->load->model('pembayaran/pembayaran_model');
         $this->load->library('form_validation');        
         $this->load->library('datatables');
@@ -33,6 +34,7 @@ class laporan extends CI_Controller
 
         $data['judul'] = 'Laporan Per Siswa';
         $data['kelas'] = $this->kelas_model->get_all();
+        $data['tahun_ajaran'] = $this->tahun_ajaran_model->get_all();
         $data['kategori'] = $this->pembayaran_model->get_all();
 
         if ($id_pembayaran) {
@@ -68,15 +70,16 @@ class laporan extends CI_Controller
     public function per_jurusan()
     {
         $id_kategori = $this->input->get('id_kategori');
-        $tahun_angkatan = $this->input->get('tahun_angkatan');
+        $id_tahun_ajaran = $this->input->get('id_tahun_ajaran');
 
         $data['judul'] = 'Laporan Per jurusan';
+        $data['tahun_ajaran'] = $this->tahun_ajaran_model->get_all();
         $data['kategori'] = $this->kategori_model->get_all();
 
         if ($id_kategori) {
             $data['kategori'] = $this->kategori_model->get_by_id($this->input->get('id_kategori'));
-            $data['pembayaran'] = $this->pembayaran_model->get_pembayaran($id_kategori, $tahun_angkatan);
-            $data['laporan'] = $this->laporan_model->get_laporan_per_jurusan($id_kategori, $tahun_angkatan);
+            $data['pembayaran'] = $this->pembayaran_model->get_pembayaran($id_kategori, $id_tahun_ajaran);
+            $data['laporan'] = $this->laporan_model->get_laporan_per_jurusan($id_kategori, $id_tahun_ajaran);
         }
 
         $this->load->view('templates/header', $data);
@@ -126,20 +129,15 @@ class laporan extends CI_Controller
             xlsWriteLabel($tablebody, $kolombody++, $data['nis']);
             xlsWriteLabel($tablebody, $kolombody++, $data['jk']);
             xlsWriteLabel($tablebody, $kolombody++, $data['jumlah_dibayar']);
+            xlsWriteLabel($tablebody, $kolombody++, $data['sisa_bayar']);
 
-            if ($data['nominal'] == 0){
-                xlsWriteLabel($tablebody, $kolombody++, $pembayaran->nominal);
+            if ($data['jumlah_dibayar'] == 0) {
                 xlsWriteLabel($tablebody, $kolombody++, 'BELUM BAYAR');
+            }else if($data['jumlah_dibayar'] < $data['nominal']){
+                xlsWriteLabel($tablebody, $kolombody++, 'BELUM LUNAS');
             }else{
-                xlsWriteLabel($tablebody, $kolombody++, $data['sisa_bayar']);
-
-                if ($data['jumlah_dibayar'] >= $pembayaran->nominal) {
-                    xlsWriteLabel($tablebody, $kolombody++, 'LUNAS');
-                }else{
-                    xlsWriteLabel($tablebody, $kolombody++, 'BELUM LUNAS');
-                }
+                xlsWriteLabel($tablebody, $kolombody++, 'LUNAS');
             }
-
 
             $tablebody++;
             $nourut++;

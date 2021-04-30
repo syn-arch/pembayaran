@@ -103,7 +103,7 @@
             </a>
             <ul class="treeview-menu">
               <li><a href="<?php echo base_url('transaksi/create_siswa') ?>"> Transaksi Baru</a></li>
-              <li><a href="<?php echo base_url('transaksi/siswa') ?>"> Transaksi Saya</a></li>
+              <li><a href="<?php echo base_url('transaksi/siswa') ?>"> Riwayat Transaksi</a></li>
             </ul>
           </li>
           <li><a href="<?php echo base_url('auth/logout_siswa') ?>"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>

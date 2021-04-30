@@ -28,7 +28,7 @@ class Transaksi extends CI_Controller
 
     public function siswa()
     {
-        $data['judul'] = 'Data Transaksi';
+        $data['judul'] = 'Riwayat Transaksi';
 
         $this->load->view('template_siswa/header', $data);
         $this->load->view('transaksi/transaksi_siswa', $data);
@@ -241,7 +241,7 @@ class Transaksi extends CI_Controller
         if ($siswa == false) {
             redirect(site_url('transaksi'));
         }else{
-            redirect(site_url('transaksi/create_siswa'));
+            redirect(site_url('transaksi/siswa'));
         }
 
     }

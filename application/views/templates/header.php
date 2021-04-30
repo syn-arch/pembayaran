@@ -169,11 +169,17 @@ if (!$user) {
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
 
-      <section class="content-header">
-        <h1>
-          <?php echo $judul ?>
-        </h1>
-      </section>
+      <?php if ($judul != 'Transaksi Baru'): ?>
+        
+
+        <section class="content-header">
+          <h1>
+            <?php echo $judul ?>
+          </h1>
+        </section>
+
+      <?php endif ?>
+      
 
       <section class="content container-fluid">
 
@@ -191,4 +197,4 @@ if (!$user) {
       <?php endif ?>
 
       <!-- custom -->
-  <script src="<?php echo base_url('assets/js/alert.js') ?>"></script>
+      <script src="<?php echo base_url('assets/js/alert.js') ?>"></script>

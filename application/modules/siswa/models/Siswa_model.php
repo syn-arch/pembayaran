@@ -22,6 +22,7 @@ class Siswa_model extends CI_Model
         //add this line for join
         $this->datatables->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
         $this->datatables->join('kelas', 'id_kelas');
+        $this->datatables->join('tahun_ajaran', 'id_tahun_ajaran');
         $this->datatables->add_column('action', 
             '<a href="'  . site_url('siswa/read/$1') . '" class="btn btn-info"><i class="fa fa-eye"></i></a> 
             <a href="'  . site_url('siswa/update/$1') . '" class="btn btn-warning"><i class="fa fa-edit"></i></a> 
@@ -34,6 +35,7 @@ class Siswa_model extends CI_Model
     {
         $this->db->join('kelas', 'id_kelas', 'left');
         $this->db->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran');
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }
@@ -43,6 +45,7 @@ class Siswa_model extends CI_Model
     {
         $this->db->join('kelas', 'id_kelas', 'left');
         $this->db->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran');
         $this->db->where($this->id, $id);
         $this->db->or_where('barcode', $id);
         return $this->db->get($this->table)->row();
@@ -53,6 +56,7 @@ class Siswa_model extends CI_Model
     {
         $this->db->join('kelas', 'id_kelas', 'left');
         $this->db->join('jurusan', 'jurusan.id_jurusan = siswa.id_jurusan');
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran');
         $this->db->where('nis', $nis);
         return $this->db->get($this->table)->row();
     }
@@ -70,6 +74,7 @@ class Siswa_model extends CI_Model
         $this->db->or_like('tahun_ajaran', $q);
         $this->db->or_like('email', $q);
         $this->db->from($this->table);
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran');
         return $this->db->count_all_results();
     }
 
@@ -87,6 +92,7 @@ class Siswa_model extends CI_Model
         $this->db->or_like('tahun_ajaran', $q);
         $this->db->or_like('email', $q);
         $this->db->limit($limit, $start);
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran');
         return $this->db->get($this->table)->result();
     }
 

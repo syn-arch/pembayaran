@@ -64,7 +64,7 @@
                         <p>2. Simpan bukti pembayaran, dapat berbentuk faktur fisik, atau screenshoot (untuk pengguna m-banking)</p>
                         <p>3. Selanjutnya inputkan pembayaran yang telah dilakukan pada link berikut</p>
                         <hr>
-                        <a target="_blank" class="btn btn-primary btn-block" href="<?php echo base_url('transaksi/bayar_siswa/') . $this->uri->segment(3) . '/' . $this->uri->segment(4) ?>">FORM PEMBAYARAN</a>
+                        <a class="btn btn-primary btn-block" href="<?php echo base_url('transaksi/bayar_siswa/') . $this->uri->segment(3) . '/' . $this->uri->segment(4) ?>">FORM PEMBAYARAN</a>
                         <hr>
                         <p>4. Tunggu maksimal 1 x 24 jam untuk dikonfirmasi oleh admin</p>
                         <p>5. Setelah pembayaran berhasil dikonfirmasi, anda dapat mencetak bukti pembayaran</p>

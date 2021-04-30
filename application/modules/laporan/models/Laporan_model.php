@@ -8,29 +8,46 @@ class Laporan_model extends CI_Model
 
     public function get_laporan_per_siswa($id_pembayaran = '', $id_kelas = '')
     {
-        $this->db->join('siswa', 'nis');
-        $this->db->join('kelas', 'siswa.id_kelas = kelas.id_kelas');
-        $this->db->where('id_pembayaran', $id_pembayaran);
-        $this->db->where('kelas.id_kelas', $id_kelas);
-        $trs =  $transaksi_kelas = $this->db->get('transaksi')->result_array();
+        // $this->db->join('siswa', 'nis');
+        // $this->db->join('kelas', 'siswa.id_kelas = kelas.id_kelas');
+        // $this->db->where('id_pembayaran', $id_pembayaran);
+        // $this->db->where('kelas.id_kelas', $id_kelas);
+        // $trs =  $transaksi_kelas = $this->db->get('transaksi')->result_array();
         
-        if ($trs) {
-            $null = false;
-        }else{
-            $null = true;
-        }
+        // if ($trs) {
+        //     $null = false;
+        // }else{
+        //     $null = true;
+        // }
 
-        $this->db->select('*, COALESCE(SUM(jumlah_dibayar),0) AS jumlah_dibayar, COALESCE(nominal, 0) - COALESCE(SUM(jumlah_dibayar),0) AS sisa_bayar');
-        $this->db->join('siswa', 'nis', 'right');
-        $this->db->join('kelas', 'siswa.id_kelas = kelas.id_kelas', 'left');
-        $this->db->join('pembayaran', 'id_pembayaran', 'left');
-        if (!$null) {
-             $this->db->where('id_pembayaran', $id_pembayaran);
-        }
-        $this->db->or_where('id_pembayaran is null');            
-        $this->db->where('kelas.id_kelas', $id_kelas);
-        $this->db->group_by('nis');
-        return $this->db->get('transaksi')->result_array();
+        // $this->db->select('nama_siswa,nis,jk,nominal,siswa.id_kelas, COALESCE(SUM(jumlah_dibayar),0) AS jumlah_dibayar, COALESCE(nominal, 0) - COALESCE(SUM(jumlah_dibayar),0) AS sisa_bayar');
+        // $this->db->join('siswa', 'nis', 'right');
+        // $this->db->join('kelas', 'siswa.id_kelas = kelas.id_kelas');
+        // $this->db->join('pembayaran', 'id_pembayaran');
+        // $this->db->where('siswa.id_kelas', $id_kelas);
+        // if (!$null) {
+        //     $this->db->where('id_pembayaran', $id_pembayaran);
+        // }
+        // $this->db->or_where('id_pembayaran is null');            
+        // $this->db->group_by('nis');
+        // return $this->db->get('transaksi')->result_array();
+
+        $query = "
+            SELECT nama_siswa,
+                nis,
+                jk,
+                nominal,
+                siswa.id_kelas,
+                COALESCE(SUM(jumlah_dibayar),0) AS jumlah_dibayar,
+                COALESCE(nominal,0) - COALESCE(SUM(jumlah_dibayar),0) AS sisa_bayar 
+            FROM transaksi
+            RIGHT JOIN siswa USING(nis)
+            JOIN pembayaran ON transaksi.id_pembayaran = pembayaran.id_pembayaran OR transaksi.id_pembayaran IS NULL
+            WHERE id_kelas = $id_kelas
+            GROUP BY nis
+        ";
+
+        return $this->db->query($query)->result_array();
     }
 
     public function get_laporan_per_kelas($id_pembayaran = '', $id_jurusan = '')
@@ -53,7 +70,7 @@ class Laporan_model extends CI_Model
         return $this->db->get('transaksi')->result_array();
     }
 
-    public function get_laporan_per_jurusan($id_kategori = '', $tahun_angkatan = '')
+    public function get_laporan_per_jurusan($id_kategori = '', $id_tahun_ajaran = '')
     {
         $this->db->select('
             jurusan.id_jurusan,
@@ -68,7 +85,7 @@ class Laporan_model extends CI_Model
         $this->db->join('jurusan', 'siswa.id_jurusan = jurusan.id_jurusan');
         $this->db->join('kelas', 'siswa.id_kelas = kelas.id_kelas');
         $this->db->join('pembayaran', 'id_pembayaran', 'left');
-        $this->db->where('pembayaran.tahun_angkatan', $tahun_angkatan);
+        $this->db->where('pembayaran.id_tahun_ajaran', $id_tahun_ajaran);
         $this->db->where('id_kategori', $id_kategori);
         $this->db->or_where('id_pembayaran is null');
         $this->db->or_where('id_kategori is null');

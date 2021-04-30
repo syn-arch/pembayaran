@@ -11,6 +11,7 @@ class Pembayaran extends CI_Controller
         $this->load->model('Pembayaran_model');
         $this->load->model('kategori/kategori_model');
         $this->load->model('jurusan/jurusan_model');
+        $this->load->model('tahun_ajaran/tahun_ajaran_model');
         $this->load->library('form_validation');        
         $this->load->library('datatables');
     }
@@ -18,6 +19,7 @@ class Pembayaran extends CI_Controller
     public function get_by_id($id = '')
     {
         $this->db->join('kategori', 'id_kategori');
+        $this->db->join('tahun_ajaran', 'id_tahun_ajaran');
         echo json_encode($this->db->get_where('pembayaran', ['id_pembayaran' => $id])->row_array());
     }
 
@@ -26,7 +28,7 @@ class Pembayaran extends CI_Controller
         $siswa = $this->db->get_where('siswa',['barcode' => $barcode])->row_array();
 
         $this->db->where('id_jurusan', $siswa['id_jurusan']);
-        $this->db->where('tahun_angkatan', $siswa['tahun_ajaran']);
+        $this->db->where('id_tahun_ajaran', $siswa['id_tahun_ajaran']);
         $this->db->join('kategori', 'id_kategori');
         echo json_encode($this->db->get('pembayaran')->result_array());
     }
@@ -53,7 +55,7 @@ class Pembayaran extends CI_Controller
               'id_pembayaran' => $row->id_pembayaran,
               'nama_kategori' => $row->nama_kategori,
               'nama_jurusan' => $row->nama_jurusan,
-              'tahun_angkatan' => $row->tahun_angkatan,
+              'tahun_ajaran' => $row->tahun_ajaran,
               'nominal' => $row->nominal,
               'keterangan' => $row->keterangan,
           );
@@ -77,7 +79,7 @@ class Pembayaran extends CI_Controller
             'id_pembayaran' => set_value('id_pembayaran'),
             'id_kategori' => set_value('id_kategori'),
             'id_jurusan' => set_value('id_jurusan'),
-            'tahun_angkatan' => set_value('tahun_angkatan'),
+            'id_tahun_ajaran' => set_value('id_tahun_ajaran'),
             'nominal' => set_value('nominal'),
             'keterangan' => set_value('keterangan'),
         );
@@ -85,6 +87,7 @@ class Pembayaran extends CI_Controller
         $data['judul'] = 'Tambah Pembayaran';
         $data['kategori'] = $this->kategori_model->get_all();
         $data['jurusan'] = $this->jurusan_model->get_all();
+        $data['tahun_ajaran'] = $this->tahun_ajaran_model->get_all();
 
         $this->load->view('templates/header', $data);
         $this->load->view('pembayaran/pembayaran_form', $data);
@@ -101,7 +104,7 @@ class Pembayaran extends CI_Controller
             $data = array(
               'id_kategori' => $this->input->post('id_kategori',TRUE),
               'id_jurusan' => $this->input->post('id_jurusan',TRUE),
-              'tahun_angkatan' => $this->input->post('tahun_angkatan',TRUE),
+              'id_tahun_ajaran' => $this->input->post('id_tahun_ajaran',TRUE),
               'nominal' => $this->input->post('nominal',TRUE),
               'keterangan' => $this->input->post('keterangan',TRUE),
           );
@@ -123,7 +126,7 @@ class Pembayaran extends CI_Controller
                 'id_pembayaran' => set_value('id_pembayaran', $row->id_pembayaran),
                 'id_kategori' => set_value('id_kategori', $row->id_kategori),
                 'id_jurusan' => set_value('id_jurusan', $row->id_jurusan),
-                'tahun_angkatan' => set_value('tahun_angkatan', $row->tahun_angkatan),
+                'id_tahun_ajaran' => set_value('id_tahun_ajaran', $row->id_tahun_ajaran),
                 'nominal' => set_value('nominal', $row->nominal),
                 'keterangan' => set_value('keterangan', $row->keterangan),
             );
@@ -131,6 +134,7 @@ class Pembayaran extends CI_Controller
             $data['judul'] = 'Ubah Pembayaran';
             $data['kategori'] = $this->kategori_model->get_all();
             $data['jurusan'] = $this->jurusan_model->get_all();
+            $data['tahun_ajaran'] = $this->tahun_ajaran_model->get_all();
 
             $this->load->view('templates/header', $data);
             $this->load->view('pembayaran/pembayaran_form', $data);
@@ -152,7 +156,7 @@ class Pembayaran extends CI_Controller
             $data = array(
               'id_kategori' => $this->input->post('id_kategori',TRUE),
               'id_jurusan' => $this->input->post('id_jurusan',TRUE),
-              'tahun_angkatan' => $this->input->post('tahun_angkatan',TRUE),
+              'id_tahun_ajaran' => $this->input->post('id_tahun_ajaran',TRUE),
               'nominal' => $this->input->post('nominal',TRUE),
               'keterangan' => $this->input->post('keterangan',TRUE),
           );
@@ -165,6 +169,11 @@ class Pembayaran extends CI_Controller
 
     public function delete($id) 
     {
+        if ($this->db->get_where('transaksi', ['id_pembayaran' => $id])->row_array()) {
+            $this->session->set_flashdata('error', 'Masih terdapat data turunan yang berhubungan');
+            redirect(site_url('pembayaran'));
+        }
+
         $row = $this->Pembayaran_model->get_by_id($id);
 
         if ($row) {
@@ -179,17 +188,17 @@ class Pembayaran extends CI_Controller
 
     public function _rules() 
     {
-       $this->form_validation->set_rules('id_kategori', 'id kategori', 'trim|required|numeric');
-       $this->form_validation->set_rules('id_jurusan', 'id jurusan', 'trim|required|numeric');
-       $this->form_validation->set_rules('tahun_angkatan', 'tahun angkatan', 'trim|required|numeric');
-       $this->form_validation->set_rules('nominal', 'nominal', 'trim|required|numeric');
+     $this->form_validation->set_rules('id_kategori', 'id kategori', 'trim|required|numeric');
+     $this->form_validation->set_rules('id_jurusan', 'id jurusan', 'trim|required|numeric');
+     $this->form_validation->set_rules('id_tahun_ajaran', 'tahun ajaran', 'trim|required|numeric');
+     $this->form_validation->set_rules('nominal', 'nominal', 'trim|required|numeric');
 
-       $this->form_validation->set_rules('id_pembayaran', 'id_pembayaran', 'trim');
-       $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
-   }
+     $this->form_validation->set_rules('id_pembayaran', 'id_pembayaran', 'trim');
+     $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+ }
 
-   public function excel()
-   {
+ public function excel()
+ {
     $this->load->helper('exportexcel');
     $namaFile = "pembayaran.xls";
     $judul = "pembayaran";
@@ -212,7 +221,7 @@ class Pembayaran extends CI_Controller
     xlsWriteLabel($tablehead, $kolomhead++, "No");
     xlsWriteLabel($tablehead, $kolomhead++, "Kategori");
     xlsWriteLabel($tablehead, $kolomhead++, "Jurusan");
-    xlsWriteLabel($tablehead, $kolomhead++, "Tahun Angkatan");
+    xlsWriteLabel($tablehead, $kolomhead++, "Tahun Ajaran");
     xlsWriteLabel($tablehead, $kolomhead++, "Nominal");
     xlsWriteLabel($tablehead, $kolomhead++, "Keterangan");
 
@@ -223,7 +232,7 @@ class Pembayaran extends CI_Controller
         xlsWriteNumber($tablebody, $kolombody++, $nourut);
         xlsWriteLabel($tablebody, $kolombody++, $data->nama_kategori);
         xlsWriteLabel($tablebody, $kolombody++, $data->nama_jurusan);
-        xlsWriteNumber($tablebody, $kolombody++, $data->tahun_angkatan);
+        xlsWriteNumber($tablebody, $kolombody++, $data->tahun_ajaran);
         xlsWriteNumber($tablebody, $kolombody++, $data->nominal);
         xlsWriteLabel($tablebody, $kolombody++, $data->keterangan);
 

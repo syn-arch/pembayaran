@@ -131,6 +131,11 @@ class Kelas extends CI_Controller
 
     public function delete($id) 
     {
+        if ($this->db->get_where('siswa', ['id_kelas' => $id])->row_array()) {
+            $this->session->set_flashdata('error', 'Masih terdapat data turunan yang berhubungan');
+            redirect(site_url('kelas'));
+        }
+
         $row = $this->Kelas_model->get_by_id($id);
 
         if ($row) {
