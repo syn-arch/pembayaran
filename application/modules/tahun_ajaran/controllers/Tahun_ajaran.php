@@ -146,7 +146,7 @@ class Tahun_ajaran extends CI_Controller
 
     public function _rules() 
     {
-       $this->form_validation->set_rules('tahun_ajaran', 'tahun ajaran', 'trim|required|numeric');
+       $this->form_validation->set_rules('tahun_ajaran', 'tahun ajaran', 'trim|required');
 
        $this->form_validation->set_rules('id_tahun_ajaran', 'id_tahun_ajaran', 'trim');
        $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
