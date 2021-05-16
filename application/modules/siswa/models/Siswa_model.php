@@ -27,6 +27,8 @@ class Siswa_model extends CI_Model
             '<a href="'  . site_url('siswa/read/$1') . '" class="btn btn-info"><i class="fa fa-eye"></i></a> 
             <a href="'  . site_url('siswa/update/$1') . '" class="btn btn-warning"><i class="fa fa-edit"></i></a> 
             <a data-href="'  . site_url('siswa/delete/$1') . '" class="btn btn-danger hapus-data"><i class="fa fa-trash"></i></a>', 'id_siswa');
+        $this->datatables->add_column('aksi', 
+            '<a href="#" data-barcode="$1" class="btn btn-info pilih_siswa"><i class="fa fa-edit"></i></a> ', 'barcode');
         return $this->datatables->generate();
     }
 
