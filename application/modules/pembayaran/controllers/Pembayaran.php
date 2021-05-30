@@ -25,7 +25,9 @@ class Pembayaran extends CI_Controller
 
     public function get_kategori_siswa_json($barcode)
     {
-        $siswa = $this->db->get_where('siswa',['barcode' => $barcode])->row_array();
+        $this->db->where('barcode', $barcode);
+        $this->db->or_where('nis', $barcode);
+        $siswa = $this->db->get('siswa')->row_array();
 
         $this->db->where('id_jurusan', $siswa['id_jurusan']);
         $this->db->where('id_tahun_ajaran', $siswa['id_tahun_ajaran']);

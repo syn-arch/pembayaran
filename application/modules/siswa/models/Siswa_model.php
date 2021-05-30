@@ -50,6 +50,7 @@ class Siswa_model extends CI_Model
         $this->db->join('tahun_ajaran', 'id_tahun_ajaran');
         $this->db->where($this->id, $id);
         $this->db->or_where('barcode', $id);
+        $this->db->or_where('nis', $id);
         return $this->db->get($this->table)->row();
     }
 

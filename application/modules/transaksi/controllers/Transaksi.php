@@ -50,6 +50,24 @@ class Transaksi extends CI_Controller
         echo $this->Transaksi_model->lastjson();
     }
 
+    public function faktur($id) 
+    {
+        $row = $this->Transaksi_model->get_by_id($id);
+        
+        if ($row) {
+
+            $data['data'] = $row;
+            $data['judul'] = 'Faktur ' . $row->no_faktur;
+            $data['telah_dibayar'] = $this->Transaksi_model->get_telah_dibayar($row->nis, $row->id_pembayaran);
+
+            $this->load->view('transaksi/transaksi_faktur', $data);
+
+        } else {
+            $this->session->set_flashdata('error', 'Data tidak ditemukan');
+            redirect(site_url('transaksi'));
+        }
+    }
+
     public function invoice($id) 
     {
         $row = $this->Transaksi_model->get_by_id($id);
@@ -239,7 +257,8 @@ class Transaksi extends CI_Controller
         $this->session->set_flashdata('success', 'Ditambah');
 
         if ($siswa == false) {
-            redirect(site_url('transaksi'));
+            $id = $this->db->insert_id();
+            redirect(site_url('transaksi/faktur/' . $id));
         }else{
             redirect(site_url('transaksi/siswa'));
         }
